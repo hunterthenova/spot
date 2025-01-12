@@ -38,6 +38,7 @@ if (!accessToken && window.location.hash) {
   mediaDisplay.hidden = false;
   startRefreshing();
 } else {
+  loginContainer.style.display = 'block'; // Show login button if not logged in
   loginBtn.addEventListener('click', () => {
     // Redirect to Spotify login
     window.location.href = `https://accounts.spotify.com/authorize?response_type=token&client_id=${clientId}&scope=${scopes.join('%20')}&redirect_uri=${redirectUri}`;
