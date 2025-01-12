@@ -45,6 +45,21 @@ body {
   margin-bottom: 20px;
 }
 
+#title {
+  font-size: 40px; /* Largest */
+  font-weight: bold;
+}
+
+#album {
+  font-size: 30px; /* Medium */
+  font-weight: normal;
+}
+
+#artist {
+  font-size: 20px; /* Smallest */
+  font-weight: lighter;
+}
+
 #progress-container {
   display: flex;
   align-items: center;
