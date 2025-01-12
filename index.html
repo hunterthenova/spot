@@ -3,31 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Spotify Media Display</title>
+  <title>Spotify Player</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <button id="fullscreen-btn">⛶</button>
-  
-  <!-- Login Button -->
   <div id="login-container">
     <button id="login-btn">Login with Spotify</button>
   </div>
 
   <div id="media-display" hidden>
-    <img id="cover-art" src="" alt="Cover Art">
-    <div id="details">
-      <p id="title">Unknown</p>
-      <p id="album">Unknown</p>
-      <p id="artist">Unknown</p>
+    <button id="fullscreen-btn">⛶</button>
+    <div id="controls">
+      <button id="eye-btn">👁️</button>
+      <button id="music-note-btn">🎵</button>
+      <button id="eyedropper-btn">🖍️</button>
+      <button id="picture-frame-btn">🖼️</button>
+      <button id="upload-bg-btn">📤</button>
     </div>
+
+    <div id="media-details">
+      <img id="cover-art" src="" alt="Cover Art">
+      <div id="title"></div>
+      <div id="album"></div>
+      <div id="artist"></div>
+    </div>
+
     <div id="progress-container">
       <span id="time-elapsed">0:00</span>
       <div id="progress-bar-container">
         <div id="progress-bar"></div>
       </div>
-      <span id="time-remaining">0:00</span>
+      <span id="time-remaining">-0:00</span>
     </div>
+
     <a id="spotify-link" href="#" target="_blank">View on Spotify</a>
   </div>
 
