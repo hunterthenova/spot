@@ -13,10 +13,13 @@ const loginBtn = document.getElementById('login-btn');
 
 // Spotify API credentials
 const clientId = '2658d08b17ae44bda4d79ee2c1fa905d';
-const redirectUri = 'https://spotify.huntersdesigns.com/;
+const redirectUri = 'https://spotify.huntersdesigns.com/'; // Update with your live site URL
 const scopes = ['user-read-currently-playing', 'user-read-playback-state'];
 
 let accessToken = getCookie('access_token');
+
+// Debugging log to check access token
+console.log('Access Token:', accessToken);
 
 // Step 1: Check if access token exists in cookies
 if (!accessToken && window.location.hash) {
