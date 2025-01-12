@@ -1,4 +1,5 @@
 const fullscreenBtn = document.getElementById('fullscreen-btn');
+const loginContainer = document.getElementById('login-container');
 const mediaDisplay = document.getElementById('media-display');
 const coverArt = document.getElementById('cover-art');
 const titleElem = document.getElementById('title');
@@ -8,6 +9,7 @@ const progressBar = document.getElementById('progress-bar');
 const timeElapsed = document.getElementById('time-elapsed');
 const timeRemaining = document.getElementById('time-remaining');
 const spotifyLink = document.getElementById('spotify-link');
+const loginBtn = document.getElementById('login-btn');
 
 // Spotify API credentials
 const clientId = '2658d08b17ae44bda4d79ee2c1fa905d';
@@ -16,7 +18,7 @@ const scopes = ['user-read-currently-playing', 'user-read-playback-state'];
 
 let accessToken;
 
-// Step 1: Redirect to Spotify Login
+// Step 1: Redirect to Spotify Login if no access token
 if (!accessToken && window.location.hash) {
   const hash = window.location.hash.substring(1).split('&').reduce((acc, item) => {
     const [key, value] = item.split('=');
@@ -26,12 +28,18 @@ if (!accessToken && window.location.hash) {
 
   accessToken = hash.access_token;
   if (accessToken) {
+    loginContainer.style.display = 'none'; // Hide login button after successful login
     mediaDisplay.hidden = false;
     startRefreshing();
   }
+} else {
+  loginBtn.addEventListener('click', () => {
+    // Redirect to Spotify login
+    window.location.href = `https://accounts.spotify.com/authorize?response_type=token&client_id=${clientId}&scope=${scopes.join('%20')}&redirect_uri=${redirectUri}`;
+  });
 }
 
-// Step 2: Refresh Playback Data
+// Step 2: Start refreshing data once logged in
 function startRefreshing() {
   setInterval(() => {
     fetchCurrentlyPlaying(accessToken);
@@ -79,5 +87,16 @@ fullscreenBtn.addEventListener('click', () => {
     document.documentElement.requestFullscreen();
   } else if (document.exitFullscreen) {
     document.exitFullscreen();
+  }
+});
+
+// Detect fullscreen change and hide/show the cursor
+document.addEventListener('fullscreenchange', () => {
+  if (document.fullscreenElement) {
+    // Hide the cursor in fullscreen
+    document.body.style.cursor = 'none';
+  } else {
+    // Show the cursor when not in fullscreen
+    document.body.style.cursor = 'auto';
   }
 });
