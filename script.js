@@ -13,7 +13,7 @@ const loginBtn = document.getElementById('login-btn');
 
 // Spotify API credentials
 const clientId = '2658d08b17ae44bda4d79ee2c1fa905d';
-const redirectUri = 'https://spot-red.vercel.app/';
+const redirectUri = 'https://spotify.huntersdesigns.com/;
 const scopes = ['user-read-currently-playing', 'user-read-playback-state'];
 
 let accessToken = getCookie('access_token');
