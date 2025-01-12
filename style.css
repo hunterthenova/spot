@@ -118,7 +118,7 @@ body {
 }
 
 #controls button {
-  background: rgba(255, 255, 255, 0.3);
+  background: none;
   border: none;
   border-radius: 5px;
   padding: 5px 10px;
@@ -136,6 +136,18 @@ body {
   height: 10px;
 }
 
+#fullscreen-btn {
+  background-color: transparent;
+  color: white;
+  opacity: 0.5;
+}
+
 :fullscreen {
   cursor: none;
+}
+
+input[type="color"] {
+  width: 100px;
+  height: 30px;
+  margin-top: 10px;
 }
