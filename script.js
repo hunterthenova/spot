@@ -41,11 +41,11 @@ if (!accessToken && window.location.hash) {
   });
 }
 
-// Step 2: Start refreshing data once logged in (every 0.5 seconds)
+// Step 2: Start refreshing data once logged in (every 0.1 seconds)
 function startRefreshing() {
   setInterval(() => {
     fetchCurrentlyPlaying(accessToken);
-  }, 500); // 0.5 seconds
+  }, 100); // 0.1 seconds
 }
 
 // Fetch currently playing track
