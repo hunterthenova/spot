@@ -89,3 +89,8 @@ body {
 #spotify-link:hover {
   background-color: #14833b;
 }
+
+/* Hide mouse cursor in fullscreen */
+:fullscreen {
+  cursor: none;
+}
