@@ -8,29 +8,6 @@ body {
   overflow: hidden;
 }
 
-#login-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 10;
-}
-
-#login-btn {
-  padding: 15px 30px;
-  font-size: 18px;
-  background-color: #1db954;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-#login-btn:hover {
-  background-color: #14833b;
-}
-
 #media-display {
   display: flex;
   flex-direction: column;
@@ -93,7 +70,51 @@ body {
   height: 100%;
   background-color: #1db954;
   width: 0%;
-  transition: width 0.5s;
+  transition: width 0.5s ease; /* Smooth transition for progress bar */
+}
+
+#spotify-link {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 20px;
+  color: white;
+  background-color: #1db954;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+#spotify-link:hover {
+  background-color: #14833b;
+}
+
+#buttons {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 9999;
+}
+
+button {
+  background-color: transparent;
+  border: none;
+  padding: 10px;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 10px;
+  opacity: 0.5; /* Subtle icon */
+  transition: opacity 0.3s ease;
+}
+
+button:hover {
+  opacity: 1; /* Full opacity on hover */
+}
+
+#login-btn {
+  margin-top: 20px;
 }
 
 :fullscreen {
