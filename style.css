@@ -8,29 +8,13 @@ body {
   overflow: hidden;
 }
 
-#fullscreen-btn {
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  background: transparent; /* Removed background */
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
-  font-size: 24px;
-  color: #fff;
-  transition: background 0.3s;
-}
-
-#fullscreen-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
-
 #media-display {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
+  transition: background-color 0.3s ease;
 }
 
 #cover-art {
@@ -86,6 +70,7 @@ body {
   height: 100%;
   background-color: #1db954;
   width: 0%;
+  transition: width 0.5s;
 }
 
 #spotify-link {
@@ -104,35 +89,43 @@ body {
   background-color: #14833b;
 }
 
-#toggle-visibility-btn {
-  font-size: 30px;
-  color: white;
-  background: transparent;
-  border: none;
+#buttons {
   position: fixed;
   top: 10px;
-  right: 10px;
-  cursor: pointer;
+  left: 10px;
+  z-index: 9999;
 }
 
-#login-btn {
+button {
   background-color: #1db954;
   border: none;
-  padding: 15px 30px;
+  padding: 10px 20px;
   color: white;
   font-size: 18px;
   font-weight: bold;
   border-radius: 30px;
   cursor: pointer;
+  margin-bottom: 10px;
   transition: background-color 0.3s;
-  margin-top: 20px;
 }
 
-#login-btn:hover {
+button:hover {
   background-color: #14833b;
 }
 
-/* Hide mouse cursor in fullscreen */
+#login-btn {
+  margin-top: 20px;
+}
+
+#fullscreen-btn, #toggle-visibility-btn, #color-mode-btn {
+  font-size: 24px;
+}
+
+#progress-bar-white {
+  background-color: white;
+  opacity: 0.5;
+}
+
 :fullscreen {
   cursor: none;
 }
