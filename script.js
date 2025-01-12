@@ -10,13 +10,19 @@ const timeElapsed = document.getElementById('time-elapsed');
 const timeRemaining = document.getElementById('time-remaining');
 const spotifyLink = document.getElementById('spotify-link');
 const loginBtn = document.getElementById('login-btn');
+const eyeBtn = document.getElementById('eye-btn');
+const musicNoteBtn = document.getElementById('music-note-btn');
+const eyedropperBtn = document.getElementById('eyedropper-btn');
+const pictureFrameBtn = document.getElementById('picture-frame-btn');
+const uploadBgBtn = document.getElementById('upload-bg-btn');
 
-// Spotify API credentials
 const clientId = '2658d08b17ae44bda4d79ee2c1fa905d';
 const redirectUri = 'https://spot-red.vercel.app/';
 const scopes = ['user-read-currently-playing', 'user-read-playback-state'];
 
 let accessToken = getCookie('access_token');
+let currentBgColor = '#121212';
+let currentProgressBarColor = '#1db954';
 
 // Step 1: Check if access token exists in cookies
 if (!accessToken && window.location.hash) {
@@ -48,7 +54,7 @@ if (!accessToken && window.location.hash) {
 function startRefreshing() {
   setInterval(() => {
     fetchCurrentlyPlaying(accessToken);
-  }, 1000);
+  }, 500); // Refresh every 500ms
 }
 
 // Fetch currently playing track
@@ -61,6 +67,8 @@ async function fetchCurrentlyPlaying(token) {
     if (!response.ok) throw new Error('Unable to fetch currently playing data.');
 
     const data = await response.json();
+    if (data.currently_playing_type === 'ad') return; // Detect ads and do nothing if playing
+
     const item = data.item;
     const progressMs = data.progress_ms;
     const durationMs = item.duration_ms;
@@ -74,6 +82,13 @@ async function fetchCurrentlyPlaying(token) {
     timeElapsed.textContent = formatTime(progressMs);
     timeRemaining.textContent = `-${formatTime(durationMs - progressMs)}`;
     spotifyLink.href = item.external_urls.spotify;
+
+    // Update background and progress bar colors based on song
+    if (musicNoteBtn.classList.contains('active')) {
+      document.body.style.backgroundColor = currentBgColor;
+      progressBar.style.backgroundColor = currentProgressBarColor;
+    }
+
   } catch (error) {
     console.error(error.message);
   }
@@ -98,12 +113,58 @@ fullscreenBtn.addEventListener('click', () => {
 // Detect fullscreen change and hide/show the cursor
 document.addEventListener('fullscreenchange', () => {
   if (document.fullscreenElement) {
-    // Hide the cursor in fullscreen
-    document.body.style.cursor = 'none';
+    document.body.style.cursor = 'none'; // Hide cursor
   } else {
-    // Show the cursor when not in fullscreen
-    document.body.style.cursor = 'auto';
+    document.body.style.cursor = 'auto'; // Show cursor
   }
+});
+
+// Toggle visibility of Spotify link
+eyeBtn.addEventListener('click', () => {
+  spotifyLink.hidden = !spotifyLink.hidden;
+});
+
+// Change background and progress bar color on music note click
+musicNoteBtn.addEventListener('click', () => {
+  musicNoteBtn.classList.toggle('active');
+  if (musicNoteBtn.classList.contains('active')) {
+    document.body.style.backgroundColor = '#9B59B6'; // Example magenta color for specific track
+    progressBar.style.backgroundColor = 'white';
+  } else {
+    document.body.style.backgroundColor = '#121212'; // Default background
+    progressBar.style.backgroundColor = '#1db954'; // Default progress bar color
+  }
+});
+
+// Open color picker for custom background and progress bar colors
+eyedropperBtn.addEventListener('click', () => {
+  const color = prompt('Enter a hex color code for background:');
+  const progressColor = prompt('Enter a hex color code for progress bar:');
+  currentBgColor = color;
+  currentProgressBarColor = progressColor;
+  document.body.style.backgroundColor = currentBgColor;
+  progressBar.style.backgroundColor = currentProgressBarColor;
+});
+
+// Picture frame button functionality
+pictureFrameBtn.addEventListener('click', () => {
+  if (coverArt.src) {
+    document.body.style.backgroundImage = `url(${coverArt.src})`;
+    progressBar.style.backgroundColor = currentProgressBarColor;
+  }
+});
+
+// Allow custom background uploads
+uploadBgBtn.addEventListener('click', () => {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = () => {
+    const file = input.files[0];
+    const url = URL.createObjectURL(file);
+    document.body.style.backgroundImage = `url(${url})`;
+  };
+  input.click();
 });
 
 // Get value of cookie by name
@@ -113,10 +174,3 @@ function getCookie(name) {
   if (parts.length === 2) return parts.pop().split(';').shift();
   return null;
 }
-
-// Handle Enter key press to open track in Spotify
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') {
-    window.open(spotifyLink.href, '_blank');
-  }
-});
