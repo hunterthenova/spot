@@ -1,7 +1,13 @@
 const fullscreenBtn = document.getElementById('fullscreen-btn');
 const mediaDisplay = document.getElementById('media-display');
 const coverArt = document.getElementById('cover-art');
+const titleElem = document.getElementById('title');
+const artistElem = document.getElementById('artist');
+const albumElem = document.getElementById('album');
 const progressBar = document.getElementById('progress-bar');
+const timeElapsed = document.getElementById('time-elapsed');
+const timeRemaining = document.getElementById('time-remaining');
+const spotifyLink = document.getElementById('spotify-link');
 
 // Spotify API credentials
 const clientId = '2658d08b17ae44bda4d79ee2c1fa905d';
@@ -48,10 +54,23 @@ async function fetchCurrentlyPlaying(token) {
 
     // Update media details
     coverArt.src = item.album.images[0].url;
+    titleElem.textContent = `Title: ${item.name}`;
+    artistElem.textContent = `Artist: ${item.artists.map(artist => artist.name).join(', ')}`;
+    albumElem.textContent = `Album: ${item.album.name}`;
     progressBar.style.width = `${(progressMs / durationMs) * 100}%`;
+    timeElapsed.textContent = formatTime(progressMs);
+    timeRemaining.textContent = `-${formatTime(durationMs - progressMs)}`;
+    spotifyLink.href = item.external_urls.spotify;
   } catch (error) {
     console.error(error.message);
   }
+}
+
+// Format milliseconds to mm:ss
+function formatTime(ms) {
+  const minutes = Math.floor(ms / 60000);
+  const seconds = Math.floor((ms % 60000) / 1000).toString().padStart(2, '0');
+  return `${minutes}:${seconds}`;
 }
 
 // Fullscreen toggle
