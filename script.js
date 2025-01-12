@@ -41,11 +41,11 @@ if (!accessToken && window.location.hash) {
   });
 }
 
-// Step 2: Start refreshing data once logged in (every 0.1 seconds)
+// Step 2: Start refreshing data once logged in (every 0.5 seconds)
 function startRefreshing() {
   setInterval(() => {
     fetchCurrentlyPlaying(accessToken);
-  }, 100); // 0.1 seconds
+  }, 500); // 0.5 seconds
 }
 
 // Fetch currently playing track
@@ -96,6 +96,7 @@ document.addEventListener('keydown', (e) => {
       document.exitFullscreen();
     }
   } else if (e.key === 'Enter') {
+    // Open the current track in Spotify
     window.open(`https://open.spotify.com/track/${item.id}`, '_blank');
   }
 });
