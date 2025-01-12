@@ -10,17 +10,13 @@ const timeElapsed = document.getElementById('time-elapsed');
 const timeRemaining = document.getElementById('time-remaining');
 const spotifyLink = document.getElementById('spotify-link');
 const loginBtn = document.getElementById('login-btn');
-const eyeBtn = document.getElementById('eye-btn');
-const eyedropperBtn = document.getElementById('eyedropper-btn');
-const uploadBgBtn = document.getElementById('upload-bg-btn');
 
+// Spotify API credentials
 const clientId = '2658d08b17ae44bda4d79ee2c1fa905d';
 const redirectUri = 'https://spot-red.vercel.app/';
 const scopes = ['user-read-currently-playing', 'user-read-playback-state'];
 
 let accessToken = getCookie('access_token');
-let currentBgColor = '#121212';
-let currentProgressBarColor = '#1db954';
 
 // Step 1: Check if access token exists in cookies
 if (!accessToken && window.location.hash) {
@@ -52,7 +48,7 @@ if (!accessToken && window.location.hash) {
 function startRefreshing() {
   setInterval(() => {
     fetchCurrentlyPlaying(accessToken);
-  }, 500); // Refresh every 500ms
+  }, 1000);
 }
 
 // Fetch currently playing track
@@ -65,8 +61,6 @@ async function fetchCurrentlyPlaying(token) {
     if (!response.ok) throw new Error('Unable to fetch currently playing data.');
 
     const data = await response.json();
-    if (data.currently_playing_type === 'ad') return; // Detect ads and do nothing if playing
-
     const item = data.item;
     const progressMs = data.progress_ms;
     const durationMs = item.duration_ms;
@@ -104,28 +98,25 @@ fullscreenBtn.addEventListener('click', () => {
 // Detect fullscreen change and hide/show the cursor
 document.addEventListener('fullscreenchange', () => {
   if (document.fullscreenElement) {
-    document.body.style.cursor = 'none'; // Hide cursor
+    // Hide the cursor in fullscreen
+    document.body.style.cursor = 'none';
   } else {
-    document.body.style.cursor = 'auto'; // Show cursor
+    // Show the cursor when not in fullscreen
+    document.body.style.cursor = 'auto';
   }
 });
 
-// Toggle visibility of Spotify link
-eyeBtn.addEventListener('click', () => {
-  spotifyLink.hidden = !spotifyLink.hidden;
-});
+// Get value of cookie by name
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+  return null;
+}
 
-// Open color picker for custom background and progress bar colors
-eyedropperBtn.addEventListener('click', () => {
-  const bgColor = prompt('Enter a hex color code for background:');
-  const progressBarColor = prompt('Enter a hex color code for progress bar:');
-  currentBgColor = bgColor;
-  currentProgressBarColor = progressBarColor;
-  document.body.style.backgroundColor = currentBgColor;
-  progressBar.style.backgroundColor = currentProgressBarColor;
-});
-
-// Allow custom background uploads
-uploadBgBtn.addEventListener('click', () => {
-  alert('Feature under construction.');
+// Handle Enter key press to open track in Spotify
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    window.open(spotifyLink.href, '_blank');
+  }
 });
