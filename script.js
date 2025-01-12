@@ -1,4 +1,5 @@
 const fullscreenBtn = document.getElementById('fullscreen-btn');
+const toggleVisibilityBtn = document.getElementById('toggle-visibility-btn');
 const loginContainer = document.getElementById('login-container');
 const mediaDisplay = document.getElementById('media-display');
 const coverArt = document.getElementById('cover-art');
@@ -44,11 +45,11 @@ if (!accessToken && window.location.hash) {
   });
 }
 
-// Step 2: Start refreshing data once logged in
+// Step 2: Start refreshing data once logged in (every 0.5 seconds)
 function startRefreshing() {
   setInterval(() => {
     fetchCurrentlyPlaying(accessToken);
-  }, 1000);
+  }, 500); // 0.5 seconds
 }
 
 // Fetch currently playing track
@@ -119,4 +120,10 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') {
     window.open(spotifyLink.href, '_blank');
   }
+});
+
+// Toggle the visibility of the "View on Spotify" button
+toggleVisibilityBtn.addEventListener('click', () => {
+  const isVisible = spotifyLink.style.display !== 'none';
+  spotifyLink.style.display = isVisible ? 'none' : 'inline-block';
 });
