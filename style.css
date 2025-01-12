@@ -8,22 +8,21 @@ body {
   overflow: hidden;
 }
 
-#fullscreen-btn {
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  background: rgba(255, 255, 255, 0.3);
+#login-btn {
+  background-color: #1db954;
   border: none;
-  border-radius: 5px;
-  padding: 5px 10px;
-  cursor: pointer;
+  padding: 15px 30px;
+  color: white;
   font-size: 18px;
-  color: #000;
-  transition: background 0.3s;
+  font-weight: bold;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 20px;
 }
 
-#fullscreen-btn:hover {
-  background: rgba(255, 255, 255, 0.6);
+#login-btn:hover {
+  background-color: #14833b;
 }
 
 #media-display {
@@ -41,23 +40,17 @@ body {
   margin-bottom: 20px;
 }
 
-#details {
-  margin-bottom: 20px;
-}
-
 #title {
-  font-size: 40px; /* Largest */
+  font-size: 40px;
   font-weight: bold;
 }
 
 #album {
-  font-size: 30px; /* Medium */
-  font-weight: normal;
+  font-size: 30px;
 }
 
 #artist {
-  font-size: 20px; /* Smallest */
-  font-weight: lighter;
+  font-size: 20px;
 }
 
 #progress-container {
@@ -66,12 +59,6 @@ body {
   justify-content: center;
   width: 80%;
   margin: 10px auto;
-}
-
-#progress-container span {
-  font-size: 14px;
-  margin: 0 10px;
-  color: #bbb;
 }
 
 #progress-bar-container {
@@ -105,25 +92,50 @@ body {
   background-color: #14833b;
 }
 
-/* Styling for login button */
-#login-btn {
-  background-color: #1db954;
+#fullscreen-btn {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  background: none;
   border: none;
-  padding: 15px 30px;
   color: white;
-  font-size: 18px;
-  font-weight: bold;
-  border-radius: 30px;
+  font-size: 24px;
   cursor: pointer;
-  transition: background-color 0.3s;
-  margin-top: 20px;
+  opacity: 0.5;
+  transition: opacity 0.3s;
 }
 
-#login-btn:hover {
-  background-color: #14833b;
+#fullscreen-btn:hover {
+  opacity: 1;
 }
 
-/* Hide mouse cursor in fullscreen */
+#controls {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 20px;
+  left: 10px;
+}
+
+#controls button {
+  background: rgba(255, 255, 255, 0.3);
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  margin: 5px;
+  cursor: pointer;
+  color: white;
+  opacity: 0.5;
+}
+
+#controls button:hover {
+  opacity: 1;
+}
+
+#progress-bar-container {
+  height: 10px;
+}
+
 :fullscreen {
   cursor: none;
 }
