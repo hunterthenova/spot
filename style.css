@@ -30,36 +30,22 @@ body {
   width: 0%;
 }
 
-#visualizer {
-  display: flex;
-  height: 100px;
+#controls {
   margin-top: 20px;
-  background: black;
-  justify-content: center;
-  align-items: flex-end;
-  overflow: hidden;
 }
 
-.bar {
-  flex: 1;
-  margin: 0 2px;
-  background: #1db954;
-  height: 50%; /* Placeholder height */
-  animation: bounce 1s infinite ease-in-out;
+#controls button {
+  margin: 5px;
+  padding: 10px 15px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  background-color: #1db954;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-@keyframes bounce {
-  0%, 100% {
-    height: 30%;
-  }
-  50% {
-    height: 100%;
-  }
-}
-
-#lyrics-container {
-  margin-top: 20px;
-  padding: 10px;
-  background: #222;
-  border-radius: 8px;
+#controls button:hover {
+  background-color: #14833b;
 }
