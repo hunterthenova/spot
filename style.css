@@ -96,22 +96,6 @@ body {
   transition: width 0.5s;
 }
 
-#spotify-link {
-  display: inline-block;
-  margin-top: 20px;
-  padding: 10px 20px;
-  color: white;
-  background-color: #1db954;
-  text-decoration: none;
-  font-weight: bold;
-  border-radius: 5px;
-  transition: background-color 0.3s;
-}
-
-#spotify-link:hover {
-  background-color: #14833b;
-}
-
 :fullscreen {
   cursor: none;
 }
