@@ -10,9 +10,19 @@
   <button id="fullscreen-btn">⛶</button>
   <div id="media-display" hidden>
     <img id="cover-art" src="" alt="Cover Art">
-    <div id="progress-container">
-      <div id="progress-bar"></div>
+    <div id="details">
+      <p id="title">Title: Unknown</p>
+      <p id="artist">Artist: Unknown</p>
+      <p id="album">Album: Unknown</p>
     </div>
+    <div id="progress-container">
+      <span id="time-elapsed">0:00</span>
+      <div id="progress-bar-container">
+        <div id="progress-bar"></div>
+      </div>
+      <span id="time-remaining">0:00</span>
+    </div>
+    <a id="spotify-link" href="#" target="_blank">View on Spotify</a>
   </div>
   <script src="script.js"></script>
 </body>
