@@ -159,9 +159,8 @@ toggleVisibilityBtn.addEventListener('click', () => {
 colorModeBtn.addEventListener('click', () => {
   colorModeActive = !colorModeActive;
   if (colorModeActive) {
-    progressBar.classList.add('progress-bar-white');
+    mediaDisplay.style.backgroundColor = 'black'; // Default background for color mode
   } else {
-    progressBar.classList.remove('progress-bar-white');
-    mediaDisplay.style.backgroundColor = '#121212'; // Reset to default
+    mediaDisplay.style.backgroundColor = ''; // Reset background when color mode is off
   }
 });
