@@ -7,8 +7,6 @@ const artistElem = document.getElementById('artist');
 const progressBar = document.getElementById('progress-bar');
 const timeElapsed = document.getElementById('time-elapsed');
 const timeRemaining = document.getElementById('time-remaining');
-const spotifyLink = document.getElementById('spotify-link');
-const loginBtn = document.getElementById('login-btn');
 
 // Spotify API credentials
 const clientId = '2658d08b17ae44bda4d79ee2c1fa905d';
@@ -77,7 +75,6 @@ async function fetchCurrentlyPlaying(token) {
     progressBar.style.width = `${(progressMs / durationMs) * 100}%`;
     timeElapsed.textContent = formatTime(progressMs);
     timeRemaining.textContent = `-${formatTime(durationMs - progressMs)}`;
-    spotifyLink.href = item.external_urls.spotify;
   } catch (error) {
     console.error(error.message);
   }
@@ -92,12 +89,14 @@ function formatTime(ms) {
 
 // Fullscreen toggle with "F" key
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'F' || e.key === 'Enter') {
+  if (e.key === 'F') {
     if (!document.fullscreenElement) {
       document.documentElement.requestFullscreen();
     } else if (document.exitFullscreen) {
       document.exitFullscreen();
     }
+  } else if (e.key === 'Enter') {
+    window.open(`https://open.spotify.com/track/${item.id}`, '_blank');
   }
 });
 
@@ -108,10 +107,3 @@ function getCookie(name) {
   if (parts.length === 2) return parts.pop().split(';').shift();
   return null;
 }
-
-// Handle Enter key press to open track in Spotify
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') {
-    window.open(spotifyLink.href, '_blank');
-  }
-});
