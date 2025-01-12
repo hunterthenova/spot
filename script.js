@@ -3,8 +3,8 @@ const loginContainer = document.getElementById('login-container');
 const mediaDisplay = document.getElementById('media-display');
 const coverArt = document.getElementById('cover-art');
 const titleElem = document.getElementById('title');
-const artistElem = document.getElementById('artist');
 const albumElem = document.getElementById('album');
+const artistElem = document.getElementById('artist');
 const progressBar = document.getElementById('progress-bar');
 const timeElapsed = document.getElementById('time-elapsed');
 const timeRemaining = document.getElementById('time-remaining');
@@ -16,9 +16,9 @@ const clientId = '2658d08b17ae44bda4d79ee2c1fa905d';
 const redirectUri = 'https://spot-red.vercel.app/';
 const scopes = ['user-read-currently-playing', 'user-read-playback-state'];
 
-let accessToken;
+let accessToken = getCookie('access_token');
 
-// Step 1: Redirect to Spotify Login if no access token
+// Step 1: Check if access token exists in cookies
 if (!accessToken && window.location.hash) {
   const hash = window.location.hash.substring(1).split('&').reduce((acc, item) => {
     const [key, value] = item.split('=');
@@ -28,10 +28,15 @@ if (!accessToken && window.location.hash) {
 
   accessToken = hash.access_token;
   if (accessToken) {
+    document.cookie = `access_token=${accessToken}; path=/;`;
     loginContainer.style.display = 'none'; // Hide login button after successful login
     mediaDisplay.hidden = false;
     startRefreshing();
   }
+} else if (accessToken) {
+  loginContainer.style.display = 'none'; // Hide login button after successful login
+  mediaDisplay.hidden = false;
+  startRefreshing();
 } else {
   loginBtn.addEventListener('click', () => {
     // Redirect to Spotify login
@@ -62,9 +67,9 @@ async function fetchCurrentlyPlaying(token) {
 
     // Update media details
     coverArt.src = item.album.images[0].url;
-    titleElem.textContent = `Title: ${item.name}`;
-    artistElem.textContent = `Artist: ${item.artists.map(artist => artist.name).join(', ')}`;
-    albumElem.textContent = `Album: ${item.album.name}`;
+    titleElem.textContent = item.name; // Only the song name
+    albumElem.textContent = item.album.name; // Only the album name
+    artistElem.textContent = item.artists.map(artist => artist.name).join(', '); // Only artist(s)
     progressBar.style.width = `${(progressMs / durationMs) * 100}%`;
     timeElapsed.textContent = formatTime(progressMs);
     timeRemaining.textContent = `-${formatTime(durationMs - progressMs)}`;
@@ -100,3 +105,11 @@ document.addEventListener('fullscreenchange', () => {
     document.body.style.cursor = 'auto';
   }
 });
+
+// Get value of cookie by name
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+  return null;
+}
