@@ -11,9 +11,7 @@ const timeRemaining = document.getElementById('time-remaining');
 const spotifyLink = document.getElementById('spotify-link');
 const loginBtn = document.getElementById('login-btn');
 const eyeBtn = document.getElementById('eye-btn');
-const musicNoteBtn = document.getElementById('music-note-btn');
 const eyedropperBtn = document.getElementById('eyedropper-btn');
-const pictureFrameBtn = document.getElementById('picture-frame-btn');
 const uploadBgBtn = document.getElementById('upload-bg-btn');
 
 const clientId = '2658d08b17ae44bda4d79ee2c1fa905d';
@@ -82,13 +80,6 @@ async function fetchCurrentlyPlaying(token) {
     timeElapsed.textContent = formatTime(progressMs);
     timeRemaining.textContent = `-${formatTime(durationMs - progressMs)}`;
     spotifyLink.href = item.external_urls.spotify;
-
-    // Update background and progress bar colors based on song
-    if (musicNoteBtn.classList.contains('active')) {
-      document.body.style.backgroundColor = currentBgColor;
-      progressBar.style.backgroundColor = currentProgressBarColor;
-    }
-
   } catch (error) {
     console.error(error.message);
   }
@@ -124,53 +115,17 @@ eyeBtn.addEventListener('click', () => {
   spotifyLink.hidden = !spotifyLink.hidden;
 });
 
-// Change background and progress bar color on music note click
-musicNoteBtn.addEventListener('click', () => {
-  musicNoteBtn.classList.toggle('active');
-  if (musicNoteBtn.classList.contains('active')) {
-    document.body.style.backgroundColor = '#9B59B6'; // Example magenta color for specific track
-    progressBar.style.backgroundColor = 'white';
-  } else {
-    document.body.style.backgroundColor = '#121212'; // Default background
-    progressBar.style.backgroundColor = '#1db954'; // Default progress bar color
-  }
-});
-
 // Open color picker for custom background and progress bar colors
 eyedropperBtn.addEventListener('click', () => {
-  const color = prompt('Enter a hex color code for background:');
-  const progressColor = prompt('Enter a hex color code for progress bar:');
-  currentBgColor = color;
-  currentProgressBarColor = progressColor;
+  const bgColor = prompt('Enter a hex color code for background:');
+  const progressBarColor = prompt('Enter a hex color code for progress bar:');
+  currentBgColor = bgColor;
+  currentProgressBarColor = progressBarColor;
   document.body.style.backgroundColor = currentBgColor;
   progressBar.style.backgroundColor = currentProgressBarColor;
 });
 
-// Picture frame button functionality
-pictureFrameBtn.addEventListener('click', () => {
-  if (coverArt.src) {
-    document.body.style.backgroundImage = `url(${coverArt.src})`;
-    progressBar.style.backgroundColor = currentProgressBarColor;
-  }
-});
-
 // Allow custom background uploads
 uploadBgBtn.addEventListener('click', () => {
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'image/*';
-  input.onchange = () => {
-    const file = input.files[0];
-    const url = URL.createObjectURL(file);
-    document.body.style.backgroundImage = `url(${url})`;
-  };
-  input.click();
+  alert('Feature under construction.');
 });
-
-// Get value of cookie by name
-function getCookie(name) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(';').shift();
-  return null;
-}
