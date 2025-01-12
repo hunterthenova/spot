@@ -3,24 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Spotify Media Display</title>
+  <title>Spotify Now Playing</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <button id="fullscreen-btn">⛶</button>
-  
-  <!-- Login Button -->
-  <div id="login-container">
+  <!-- Login Button Container -->
+  <div id="login-container" style="display: none;">
     <button id="login-btn">Login with Spotify</button>
   </div>
 
+  <!-- Media Display Container -->
   <div id="media-display" hidden>
-    <img id="cover-art" src="" alt="Cover Art">
+    <img id="cover-art" alt="Album cover art">
     <div id="details">
-      <p id="title">Unknown</p>
-      <p id="album">Unknown</p>
-      <p id="artist">Unknown</p>
+      <div id="title"></div> <!-- Song title -->
+      <div id="album"></div> <!-- Album name -->
+      <div id="artist"></div> <!-- Artist name -->
     </div>
+
     <div id="progress-container">
       <span id="time-elapsed">0:00</span>
       <div id="progress-bar-container">
@@ -28,8 +28,13 @@
       </div>
       <span id="time-remaining">0:00</span>
     </div>
+
     <a id="spotify-link" href="#" target="_blank">View on Spotify</a>
   </div>
+
+  <!-- Fullscreen and Toggle Visibility Buttons -->
+  <button id="fullscreen-btn">⛶</button>
+  <button id="toggle-visibility-btn">ಠ</button>
 
   <script src="script.js"></script>
 </body>
