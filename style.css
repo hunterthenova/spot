@@ -97,28 +97,24 @@ body {
 }
 
 button {
-  background-color: #1db954;
+  background-color: transparent;
   border: none;
-  padding: 10px 20px;
+  padding: 10px;
   color: white;
-  font-size: 18px;
+  font-size: 24px;
   font-weight: bold;
-  border-radius: 30px;
   cursor: pointer;
   margin-bottom: 10px;
-  transition: background-color 0.3s;
+  opacity: 0.5; /* Subtle icons */
+  transition: opacity 0.3s ease;
 }
 
 button:hover {
-  background-color: #14833b;
+  opacity: 1; /* Full opacity on hover */
 }
 
 #login-btn {
   margin-top: 20px;
-}
-
-#fullscreen-btn, #toggle-visibility-btn, #color-mode-btn {
-  font-size: 24px;
 }
 
 #progress-bar-white {
