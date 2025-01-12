@@ -105,6 +105,24 @@ body {
   background-color: #14833b;
 }
 
+/* Styling for login button */
+#login-btn {
+  background-color: #1db954;
+  border: none;
+  padding: 15px 30px;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 20px;
+}
+
+#login-btn:hover {
+  background-color: #14833b;
+}
+
 /* Hide mouse cursor in fullscreen */
 :fullscreen {
   cursor: none;
