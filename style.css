@@ -1,0 +1,15 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background-color: #121212;
+  color: white;
+}
+
+#media-display {
+  margin-top: 20px;
+}
+
+#cover-art {
+  max-width: 300px;
+  margin: 20px auto;
+}
