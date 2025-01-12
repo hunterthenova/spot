@@ -1,5 +1,6 @@
 const fullscreenBtn = document.getElementById('fullscreen-btn');
 const toggleVisibilityBtn = document.getElementById('toggle-visibility-btn');
+const colorModeBtn = document.getElementById('color-mode-btn');
 const loginContainer = document.getElementById('login-container');
 const mediaDisplay = document.getElementById('media-display');
 const coverArt = document.getElementById('cover-art');
@@ -11,6 +12,7 @@ const timeElapsed = document.getElementById('time-elapsed');
 const timeRemaining = document.getElementById('time-remaining');
 const spotifyLink = document.getElementById('spotify-link');
 const loginBtn = document.getElementById('login-btn');
+const buttonsContainer = document.getElementById('buttons');
 
 // Spotify API credentials
 const clientId = '2658d08b17ae44bda4d79ee2c1fa905d';
@@ -18,6 +20,7 @@ const redirectUri = 'https://spot-red.vercel.app/';
 const scopes = ['user-read-currently-playing', 'user-read-playback-state'];
 
 let accessToken = getCookie('access_token');
+let colorModeActive = false;
 
 // Step 1: Check if access token exists in cookies
 if (!accessToken && window.location.hash) {
@@ -62,6 +65,11 @@ async function fetchCurrentlyPlaying(token) {
     if (!response.ok) throw new Error('Unable to fetch currently playing data.');
 
     const data = await response.json();
+    if (data.currently_playing_type === 'ad') {
+      // If ad is detected, stop the rest of the actions
+      return;
+    }
+
     const item = data.item;
     const progressMs = data.progress_ms;
     const durationMs = item.duration_ms;
@@ -75,9 +83,30 @@ async function fetchCurrentlyPlaying(token) {
     timeElapsed.textContent = formatTime(progressMs);
     timeRemaining.textContent = `-${formatTime(durationMs - progressMs)}`;
     spotifyLink.href = item.external_urls.spotify;
+
+    if (colorModeActive) {
+      // Set background to the dominant color of the cover art
+      const dominantColor = await getDominantColor(item.album.images[0].url);
+      mediaDisplay.style.backgroundColor = dominantColor;
+    }
   } catch (error) {
     console.error(error.message);
   }
+}
+
+// Get dominant color from album cover
+async function getDominantColor(imageUrl) {
+  const img = new Image();
+  img.src = imageUrl;
+
+  return new Promise((resolve, reject) => {
+    img.onload = () => {
+      const colorThief = new ColorThief();
+      const color = colorThief.getColor(img);
+      resolve(`rgb(${color[0]}, ${color[1]}, ${color[2]})`);
+    };
+    img.onerror = reject;
+  });
 }
 
 // Format milliseconds to mm:ss
@@ -99,10 +128,8 @@ fullscreenBtn.addEventListener('click', () => {
 // Detect fullscreen change and hide/show the cursor
 document.addEventListener('fullscreenchange', () => {
   if (document.fullscreenElement) {
-    // Hide the cursor in fullscreen
     document.body.style.cursor = 'none';
   } else {
-    // Show the cursor when not in fullscreen
     document.body.style.cursor = 'auto';
   }
 });
@@ -126,4 +153,15 @@ document.addEventListener('keydown', (e) => {
 toggleVisibilityBtn.addEventListener('click', () => {
   const isVisible = spotifyLink.style.display !== 'none';
   spotifyLink.style.display = isVisible ? 'none' : 'inline-block';
+});
+
+// Toggle color mode
+colorModeBtn.addEventListener('click', () => {
+  colorModeActive = !colorModeActive;
+  if (colorModeActive) {
+    progressBar.classList.add('progress-bar-white');
+  } else {
+    progressBar.classList.remove('progress-bar-white');
+    mediaDisplay.style.backgroundColor = '#121212'; // Reset to default
+  }
 });
