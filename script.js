@@ -4,13 +4,20 @@ const coverArt = document.getElementById('cover-art');
 const titleElem = document.getElementById('title');
 const artistElem = document.getElementById('artist');
 const progressBar = document.getElementById('progress-bar');
-const lyricsElem = document.getElementById('lyrics');
-const visualizer = document.getElementById('visualizer');
+const playBtn = document.getElementById('play-btn');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
+const shuffleBtn = document.getElementById('shuffle-btn');
+const repeatBtn = document.getElementById('repeat-btn');
 
 // Spotify API credentials
 const clientId = '2658d08b17ae44bda4d79ee2c1fa905d';
 const redirectUri = 'https://spot-red.vercel.app/';
-const scopes = ['user-read-currently-playing', 'user-read-playback-state'];
+const scopes = [
+  'user-read-currently-playing',
+  'user-read-playback-state',
+  'user-modify-playback-state',
+];
 
 let accessToken;
 
@@ -30,8 +37,10 @@ if (window.location.hash) {
 
   accessToken = hash.access_token;
   if (accessToken) {
+    loginBtn.style.display = 'none'; // Hide login button
     mediaDisplay.hidden = false;
     startRefreshing();
+    setupMediaControls();
   }
 }
 
@@ -61,30 +70,78 @@ async function fetchCurrentlyPlaying(token) {
     titleElem.textContent = `Title: ${item.name}`;
     artistElem.textContent = `Artist: ${item.artists.map(artist => artist.name).join(', ')}`;
     progressBar.style.width = `${(progressMs / durationMs) * 100}%`;
-
-    // Fetch lyrics (mocked for demo)
-    fetchLyrics(item.name, item.artists[0].name);
-
-    // Update visualizer
-    updateVisualizer();
   } catch (error) {
     console.error(error.message);
   }
 }
 
-// Mock lyrics fetcher
-async function fetchLyrics(trackName, artistName) {
-  // Replace with an actual lyrics API like Musixmatch, Genius, etc.
-  lyricsElem.textContent = `Lyrics for "${trackName}" by ${artistName}...`;
+// Step 4: Media Controls
+function setupMediaControls() {
+  playBtn.addEventListener('click', () => togglePlayback(accessToken));
+  prevBtn.addEventListener('click', () => sendPlaybackCommand('previous', accessToken));
+  nextBtn.addEventListener('click', () => sendPlaybackCommand('next', accessToken));
+  shuffleBtn.addEventListener('click', () => toggleShuffle(accessToken));
+  repeatBtn.addEventListener('click', () => toggleRepeat(accessToken));
 }
 
-// Update sound bar visualizer
-function updateVisualizer() {
-  visualizer.innerHTML = ''; // Clear previous bars
-  for (let i = 0; i < 20; i++) {
-    const bar = document.createElement('div');
-    bar.classList.add('bar');
-    bar.style.height = `${Math.random() * 100}%`; // Random height for visual effect
-    visualizer.appendChild(bar);
+async function sendPlaybackCommand(command, token) {
+  const endpointMap = {
+    previous: 'https://api.spotify.com/v1/me/player/previous',
+    next: 'https://api.spotify.com/v1/me/player/next',
+  };
+
+  try {
+    const response = await fetch(endpointMap[command], {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!response.ok) throw new Error(`${command} command failed.`);
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
+async function togglePlayback(token) {
+  try {
+    const response = await fetch('https://api.spotify.com/v1/me/player', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!response.ok) throw new Error('Failed to fetch playback state.');
+
+    const data = await response.json();
+    const isPlaying = data.is_playing;
+
+    const playbackEndpoint = isPlaying
+      ? 'https://api.spotify.com/v1/me/player/pause'
+      : 'https://api.spotify.com/v1/me/player/play';
+
+    await fetch(playbackEndpoint, {
+      method: 'PUT',
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
+async function toggleShuffle(token) {
+  try {
+    await fetch('https://api.spotify.com/v1/me/player/shuffle?state=true', {
+      method: 'PUT',
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
+async function toggleRepeat(token) {
+  try {
+    await fetch('https://api.spotify.com/v1/me/player/repeat?state=context', {
+      method: 'PUT',
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  } catch (error) {
+    console.error(error.message);
   }
 }
