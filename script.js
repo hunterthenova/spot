@@ -1,54 +1,23 @@
-const loginContainer = document.getElementById('login-container');
-const mediaDisplay = document.getElementById('media-display');
-const coverArt = document.getElementById('cover-art');
-const titleElem = document.getElementById('title');
-const albumElem = document.getElementById('album');
-const artistElem = document.getElementById('artist');
-const progressBar = document.getElementById('progress-bar');
-const timeElapsed = document.getElementById('time-elapsed');
-const timeRemaining = document.getElementById('time-remaining');
+let currentTrackId = null; // Store track ID for opening the track in Spotify
 
-// Spotify API credentials
-const clientId = '2658d08b17ae44bda4d79ee2c1fa905d';
-const redirectUri = 'https://spot-red.vercel.app/';
-const scopes = ['user-read-currently-playing', 'user-read-playback-state'];
-
-let accessToken = getCookie('access_token');
-
-// Step 1: Check if access token exists in cookies
-if (!accessToken && window.location.hash) {
-  const hash = window.location.hash.substring(1).split('&').reduce((acc, item) => {
-    const [key, value] = item.split('=');
-    acc[key] = value;
-    return acc;
-  }, {});
-
-  accessToken = hash.access_token;
-  if (accessToken) {
-    document.cookie = `access_token=${accessToken}; path=/;`;
-    loginContainer.style.display = 'none'; // Hide login button after successful login
-    mediaDisplay.hidden = false;
-    startRefreshing();
+// Listen for the 'Enter' and 'F' keys
+document.addEventListener('keydown', (e) => {
+  // Handle fullscreen toggle with 'F' key
+  if (e.key === 'F') {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen(); // Enter fullscreen
+    } else if (document.exitFullscreen) {
+      document.exitFullscreen(); // Exit fullscreen
+    }
   }
-} else if (accessToken) {
-  loginContainer.style.display = 'none'; // Hide login button after successful login
-  mediaDisplay.hidden = false;
-  startRefreshing();
-} else {
-  loginBtn.addEventListener('click', () => {
-    // Redirect to Spotify login
-    window.location.href = `https://accounts.spotify.com/authorize?response_type=token&client_id=${clientId}&scope=${scopes.join('%20')}&redirect_uri=${redirectUri}`;
-  });
-}
 
-// Step 2: Start refreshing data once logged in (every 0.5 seconds)
-function startRefreshing() {
-  setInterval(() => {
-    fetchCurrentlyPlaying(accessToken);
-  }, 500); // 0.5 seconds
-}
+  // Handle opening the track in Spotify with 'Enter' key
+  if (e.key === 'Enter' && currentTrackId) {
+    window.open(`https://open.spotify.com/track/${currentTrackId}`, '_blank');
+  }
+});
 
-// Fetch currently playing track
+// Fetch currently playing track data from Spotify API
 async function fetchCurrentlyPlaying(token) {
   try {
     const response = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
@@ -59,19 +28,23 @@ async function fetchCurrentlyPlaying(token) {
 
     const data = await response.json();
     if (data.currently_playing_type === 'ad') {
-      // If ad is detected, stop the rest of the actions
+      // If an ad is playing, stop further actions
       return;
     }
 
     const item = data.item;
+    currentTrackId = item.id; // Store the track ID
+
+    // Update media details (cover art, title, album, artist)
+    coverArt.src = item.album.images[0].url;
+    titleElem.textContent = item.name; // Song name
+    albumElem.textContent = item.album.name; // Album name
+    artistElem.textContent = item.artists.map(artist => artist.name).join(', '); // Artist names
+
     const progressMs = data.progress_ms;
     const durationMs = item.duration_ms;
 
-    // Update media details
-    coverArt.src = item.album.images[0].url;
-    titleElem.textContent = item.name; // Only the song name
-    albumElem.textContent = item.album.name; // Only the album name
-    artistElem.textContent = item.artists.map(artist => artist.name).join(', '); // Only artist(s)
+    // Update progress bar and time
     progressBar.style.width = `${(progressMs / durationMs) * 100}%`;
     timeElapsed.textContent = formatTime(progressMs);
     timeRemaining.textContent = `-${formatTime(durationMs - progressMs)}`;
@@ -80,31 +53,39 @@ async function fetchCurrentlyPlaying(token) {
   }
 }
 
-// Format milliseconds to mm:ss
+// Format time in mm:ss
 function formatTime(ms) {
   const minutes = Math.floor(ms / 60000);
   const seconds = Math.floor((ms % 60000) / 1000).toString().padStart(2, '0');
   return `${minutes}:${seconds}`;
 }
 
-// Fullscreen toggle with "F" key
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'F') {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen();
-    } else if (document.exitFullscreen) {
-      document.exitFullscreen();
-    }
-  } else if (e.key === 'Enter') {
-    // Open the current track in Spotify
-    window.open(`https://open.spotify.com/track/${item.id}`, '_blank');
-  }
-});
+// Periodically fetch currently playing track (every 0.1 seconds)
+function startRefreshing() {
+  setInterval(() => {
+    if (accessToken) fetchCurrentlyPlaying(accessToken);
+  }, 100); // 0.1 second refresh
+}
 
-// Get value of cookie by name
+// Fetch the access token from the cookies
 function getCookie(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
   if (parts.length === 2) return parts.pop().split(';').shift();
   return null;
+}
+
+// Step 1: Check if access token exists in cookies
+let accessToken = getCookie('access_token');
+
+// If token exists, fetch currently playing data
+if (accessToken) {
+  loginContainer.style.display = 'none'; // Hide login button after successful login
+  mediaDisplay.hidden = false;
+  startRefreshing();
+} else {
+  // If token doesn't exist, redirect to Spotify login
+  loginBtn.addEventListener('click', () => {
+    window.location.href = `https://accounts.spotify.com/authorize?response_type=token&client_id=2658d08b17ae44bda4d79ee2c1fa905d&scope=user-read-currently-playing user-read-playback-state&redirect_uri=https://spot-red.vercel.app/`;
+  });
 }
