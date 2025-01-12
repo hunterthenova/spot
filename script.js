@@ -113,3 +113,10 @@ function getCookie(name) {
   if (parts.length === 2) return parts.pop().split(';').shift();
   return null;
 }
+
+// Handle Enter key press to open track in Spotify
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    window.open(spotifyLink.href, '_blank');
+  }
+});
