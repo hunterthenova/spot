@@ -5,8 +5,8 @@ const titleElem = document.getElementById('title');
 const artistElem = document.getElementById('artist');
 
 // Spotify API credentials
-const clientId = 'YOUR_SPOTIFY_CLIENT_ID';
-const redirectUri = 'https://YOUR_VERCEL_DEPLOYMENT_URL/'; // Replace with your Vercel URL
+const clientId = '2658d08b17ae44bda4d79ee2c1fa905d';
+const redirectUri = 'https://spot-red.vercel.app/'; // Replace with your Vercel URL
 const scopes = ['user-read-currently-playing', 'user-read-playback-state'];
 
 // Step 1: Redirect to Spotify Login
