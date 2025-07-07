@@ -1,129 +1,158 @@
-const fullscreenBtn = document.getElementById('fullscreen-btn');
-const loginContainer = document.getElementById('login-container');
-const mediaDisplay = document.getElementById('media-display');
-const coverArt = document.getElementById('cover-art');
-const titleElem = document.getElementById('title');
-const albumElem = document.getElementById('album');
-const artistElem = document.getElementById('artist');
-const progressBar = document.getElementById('progress-bar');
-const timeElapsed = document.getElementById('time-elapsed');
-const timeRemaining = document.getElementById('time-remaining');
-const spotifyLink = document.getElementById('spotify-link');
-const loginBtn = document.getElementById('login-btn');
+// --- CONFIGURATION ---
+// these should be injected by your Vercel build process:
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
 
-// Spotify API credentials
-const clientId = '2658d08b17ae44bda4d79ee2c1fa905d';
-const redirectUri = 'https://spotify.huntersdesigns.com/'; // Update with your live site URL
-const scopes = ['user-read-currently-playing', 'user-read-playback-state'];
+const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
+const REDIRECT_URI     = window.location.origin + window.location.pathname;
+const SCOPES           = 'user-read-currently-playing';
 
-let accessToken = getCookie('access_token');
+// --- INIT SUPABASE ---
+const { createClient } = supabase;
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Debugging log to check access token
-console.log('Access Token:', accessToken);
+// --- UI ELEMENTS ---
+const signInBtn      = document.getElementById('sign-in-btn');
+const signOutBtn     = document.getElementById('sign-out-btn');
+const nowPlayingPre  = document.getElementById('now-playing');
+const hamburger      = document.getElementById('hamburger');
+const sidebar        = document.getElementById('sidebar');
+const barColorPicker = document.getElementById('bar-color-picker');
+const bgImageInput   = document.getElementById('bg-image-input');
+const applyStyleBtn  = document.getElementById('apply-style-btn');
+const savePresetBtn  = document.getElementById('save-preset-btn');
+const presetList     = document.getElementById('preset-list');
 
-// Step 1: Check if access token exists in cookies
-if (!accessToken && window.location.hash) {
-  const hash = window.location.hash.substring(1).split('&').reduce((acc, item) => {
-    const [key, value] = item.split('=');
-    acc[key] = value;
-    return acc;
-  }, {});
+// generate or load a pseudo‑user ID
+let userId = localStorage.getItem('notes_user_id');
+if (!userId) {
+  userId = crypto.randomUUID();
+  localStorage.setItem('notes_user_id', userId);
+}
 
-  accessToken = hash.access_token;
-  if (accessToken) {
-    document.cookie = `access_token=${accessToken}; path=/;`;
-    loginContainer.style.display = 'none'; // Hide login button after successful login
-    mediaDisplay.hidden = false;
-    startRefreshing();
+// --- SPOTIFY FLOW ---
+function handleSpotifyCallback() {
+  const hash = window.location.hash.substring(1);
+  const params = new URLSearchParams(hash);
+  const token = params.get('access_token');
+  if (token) {
+    window.history.replaceState({}, document.title, REDIRECT_URI);
+    localStorage.setItem('spotify_token', token);
+    upsertUserToken(token);
+    signInBtn.hidden = true;
+    signOutBtn.hidden = false;
+    startPolling();
   }
-} else if (accessToken) {
-  loginContainer.style.display = 'none'; // Hide login button after successful login
-  mediaDisplay.hidden = false;
-  startRefreshing();
-} else {
-  loginContainer.style.display = 'block'; // Show login button if not logged in
-  loginBtn.addEventListener('click', () => {
-    // Redirect to Spotify login
-    window.location.href = `https://accounts.spotify.com/authorize?response_type=token&client_id=${clientId}&scope=${scopes.join('%20')}&redirect_uri=${redirectUri}`;
+}
+
+async function upsertUserToken(token) {
+  await supabaseClient
+    .from('users')
+    .upsert({ id: userId, spotify_token: token });
+}
+
+function signInWithSpotify() {
+  const authUrl =
+    `https://accounts.spotify.com/authorize?` +
+    `response_type=token&client_id=${SPOTIFY_CLIENT_ID}` +
+    `&scope=${encodeURIComponent(SCOPES)}` +
+    `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
+  window.location = authUrl;
+}
+
+async function signOut() {
+  localStorage.removeItem('spotify_token');
+  signInBtn.hidden = false;
+  signOutBtn.hidden = true;
+  nowPlayingPre.textContent = `Title: –\nArtist: –\n\n[------------------------------]\n\n00:00 – 00:00`;
+  stopPolling();
+}
+
+// --- POLLING SPOTIFY ---
+let pollInterval;
+function startPolling() {
+  fetchNowPlaying();
+  pollInterval = setInterval(fetchNowPlaying, 5000);
+}
+function stopPolling() {
+  clearInterval(pollInterval);
+}
+
+async function fetchNowPlaying() {
+  const token = localStorage.getItem('spotify_token');
+  if (!token) return;
+  const resp = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
+    headers: { Authorization: `Bearer ${token}` }
   });
+  if (resp.status === 204 || resp.status > 400) return;
+  const data = await resp.json();
+  const { name, artists, progress_ms, item } = data;
+  const duration = item.duration_ms;
+  const barLen = 30;
+  const filled = Math.round((progress_ms / duration) * barLen);
+  const bar = `[${'#'.repeat(filled)}${'-'.repeat(barLen - filled)}]`;
+  const fmt = ms => new Date(ms).toISOString().substr(14, 5);
+  nowPlayingPre.textContent =
+    `Title: ${name}\n` +
+    `Artist: ${artists.map(a=>a.name).join(', ')}\n\n` +
+    `${bar}\n\n` +
+    `${fmt(progress_ms)} – ${fmt(duration)}`;
 }
 
-// Step 2: Start refreshing data once logged in (every 0.1 seconds)
-function startRefreshing() {
-  setInterval(() => {
-    fetchCurrentlyPlaying(accessToken);
-  }, 100); // 0.1 seconds
+// --- CUSTOMIZATION & PRESETS ---
+function applyStyles(cfg) {
+  document.body.style.setProperty('--bar-color', cfg.barColor);
+  document.body.style.backgroundImage = cfg.bgImage ? `url('${cfg.bgImage}')` : '';
 }
+applyStyleBtn.onclick = () => {
+  const cfg = {
+    barColor: barColorPicker.value,
+    bgImage: bgImageInput.value.trim()
+  };
+  applyStyles(cfg);
+};
 
-// Fetch currently playing track
-async function fetchCurrentlyPlaying(token) {
-  try {
-    const response = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
-      headers: { Authorization: `Bearer ${token}` },
+async function loadPresets() {
+  const { data, error } = await supabaseClient
+    .from('presets')
+    .select('*')
+    .eq('user_id', userId);
+  presetList.innerHTML = '';
+  if (data) {
+    data.forEach(p => {
+      const li = document.createElement('li');
+      li.textContent = p.name;
+      li.onclick = () => applyStyles({ barColor: p.bar_color, bgImage: p.bg_image });
+      presetList.appendChild(li);
     });
-
-    if (!response.ok) throw new Error('Unable to fetch currently playing data.');
-
-    const data = await response.json();
-    if (data.currently_playing_type === 'ad') {
-      // If ad is detected, stop the rest of the actions
-      return;
-    }
-
-    const item = data.item;
-    const progressMs = data.progress_ms;
-    const durationMs = item.duration_ms;
-
-    // Update media details
-    coverArt.src = item.album.images[0].url;
-    titleElem.textContent = item.name; // Only the song name
-    albumElem.textContent = item.album.name; // Only the album name
-    artistElem.textContent = item.artists.map(artist => artist.name).join(', '); // Only artist(s)
-    progressBar.style.width = `${(progressMs / durationMs) * 100}%`;
-    timeElapsed.textContent = formatTime(progressMs);
-    timeRemaining.textContent = `-${formatTime(durationMs - progressMs)}`;
-    spotifyLink.href = item.external_urls.spotify;
-  } catch (error) {
-    console.error(error.message);
   }
 }
 
-// Format milliseconds to mm:ss
-function formatTime(ms) {
-  const minutes = Math.floor(ms / 60000);
-  const seconds = Math.floor((ms % 60000) / 1000).toString().padStart(2, '0');
-  return `${minutes}:${seconds}`;
-}
+savePresetBtn.onclick = async () => {
+  const name = prompt('Preset name?');
+  if (!name) return;
+  const cfg = {
+    user_id: userId,
+    name,
+    bar_color: barColorPicker.value,
+    bg_image: bgImageInput.value.trim()
+  };
+  await supabaseClient
+    .from('presets')
+    .upsert(cfg, { onConflict: ['user_id', 'name'] });
+  loadPresets();
+};
 
-// Fullscreen toggle
-fullscreenBtn.addEventListener('click', () => {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen();
-  } else if (document.exitFullscreen) {
-    document.exitFullscreen();
-  }
-});
-
-// Detect fullscreen change and hide/show the cursor
+// --- SIDEBAR & FULLSCREEN ---
+hamburger.onclick = () => sidebar.classList.toggle('hidden');
 document.addEventListener('fullscreenchange', () => {
-  if (document.fullscreenElement) {
-    document.body.style.cursor = 'none';
-  } else {
-    document.body.style.cursor = 'auto';
-  }
+  const hide = !!document.fullscreenElement;
+  sidebar.style.display   = hide ? 'none' : '';
+  document.getElementById('top-bar').style.display = hide ? 'none' : 'flex';
 });
 
-// Get value of cookie by name
-function getCookie(name) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(';').shift();
-  return null;
-}
-
-// Handle Enter key press to open track in Spotify
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') {
-    window.open(spotifyLink.href, '_blank');
-  }
-});
+// --- HOOKS & INIT ---
+signInBtn.onclick  = signInWithSpotify;
+signOutBtn.onclick = signOut;
+handleSpotifyCallback();
+loadPresets();
