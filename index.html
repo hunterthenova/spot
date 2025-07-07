@@ -2,38 +2,51 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Spotify Now Playing</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Notes – Live Spotify</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Login Button Container -->
-  <div id="login-container" style="display: none;">
-    <button id="login-btn">Login with Spotify</button>
-  </div>
-
-  <!-- Media Display Container -->
-  <div id="media-display" hidden>
-    <img id="cover-art" alt="Album cover art">
-    <div id="details">
-      <div id="title"></div> <!-- Song title -->
-      <div id="album"></div> <!-- Album name -->
-      <div id="artist"></div> <!-- Artist name -->
+  <!-- Top bar -->
+  <header id="top-bar">
+    <button id="sign-in-btn">Sign in with Spotify</button>
+    <button id="sign-out-btn" hidden>Sign Out</button>
+    <!-- Hamburger -->
+    <div id="hamburger">
+      <span></span><span></span><span></span>
     </div>
+  </header>
 
-    <div id="progress-container">
-      <span id="time-elapsed">0:00</span>
-      <div id="progress-bar-container">
-        <div id="progress-bar"></div>
-      </div>
-      <span id="time-remaining">0:00</span>
-    </div>
+  <!-- Sidebar -->
+  <aside id="sidebar" class="hidden">
+    <h2>Customize</h2>
+    <label>Progress Bar Color:
+      <input type="color" id="bar-color-picker" value="#1DB954">
+    </label>
+    <label>Background Image URL:
+      <input type="text" id="bg-image-input" placeholder="https://...jpg">
+    </label>
+    <button id="apply-style-btn">Apply</button>
+    <hr>
+    <h3>Presets</h3>
+    <ul id="preset-list"></ul>
+    <button id="save-preset-btn">Save Preset</button>
+  </aside>
 
-  <!-- Buttons Section (Fullscreen) -->
-  <div id="buttons">
-    <button id="fullscreen-btn">⛶</button>
-  </div>
+  <!-- Main content -->
+  <main id="app">
+    <pre id="now-playing">
+Title: –
+Artist: –
 
+[------------------------------]
+
+00:00 – 00:00
+    </pre>
+  </main>
+
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
