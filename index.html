@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Spotify Now Playing</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <!-- Login Button Container -->
-  <div id="login-container" style="display: none;">
+  <div id="login-container">
     <button id="login-btn">Login with Spotify</button>
   </div>
 
@@ -20,7 +20,6 @@
       <div id="album"></div>
       <div id="artist"></div>
     </div>
-
     <div id="progress-container">
       <span id="time-elapsed">0:00</span>
       <div id="progress-bar-container">
@@ -39,59 +38,23 @@
   <!-- Customization Sidebar -->
   <aside id="sidebar">
     <h2>Customize</h2>
-
-    <!-- Toggle visibility -->
     <fieldset>
       <legend>Show/Hide</legend>
       <label><input type="checkbox" class="opt-toggle" data-target="#cover-art" checked> Cover</label>
       <label><input type="checkbox" class="opt-toggle" data-target="#details" checked> Details</label>
       <label><input type="checkbox" class="opt-toggle" data-target="#progress-container" checked> Progress</label>
     </fieldset>
-
-    <!-- Colors -->
-    <label>Progress Bar Color:
-      <input type="color" id="opt-bar-color" value="#1db954">
-    </label>
-    <label>Title Color:
-      <input type="color" id="opt-title-color" value="#fff">
-    </label>
-    <label>Album Color:
-      <input type="color" id="opt-album-color" value="#fff">
-    </label>
-    <label>Artist Color:
-      <input type="color" id="opt-artist-color" value="#bbb">
-    </label>
-
-    <!-- Font Sizes -->
-    <label>Title Size (<span id="opt-title-val">40px</span>):
-      <input type="range" id="opt-title-size" min="20" max="80" value="40">
-    </label>
-    <label>Album Size (<span id="opt-album-val">30px</span>):
-      <input type="range" id="opt-album-size" min="16" max="60" value="30">
-    </label>
-    <label>Artist Size (<span id="opt-artist-val">20px</span>):
-      <input type="range" id="opt-artist-size" min="12" max="40" value="20">
-    </label>
-
-    <!-- Progress bar radius -->
-    <label>Progress Radius (<span id="opt-radius-val">5px</span>):
-      <input type="range" id="opt-radius" min="0" max="20" value="5">
-    </label>
-
-    <!-- Background -->
-    <label>Background URL:
-      <input type="text" id="opt-bg-url" placeholder="https://...jpg">
-    </label>
-    <label>Fit Mode:
-      <select id="opt-bg-fit">
-        <option value="cover">Cover</option>
-        <option value="contain">Contain</option>
-      </select>
-    </label>
-
+    <label>Progress Bar Color:<input type="color" id="opt-bar-color" value="#1db954"></label>
+    <label>Title Color:<input type="color" id="opt-title-color" value="#fff"></label>
+    <label>Album Color:<input type="color" id="opt-album-color" value="#fff"></label>
+    <label>Artist Color:<input type="color" id="opt-artist-color" value="#bbb"></label>
+    <label>Title Size (<span id="opt-title-val">40px</span>):<input type="range" id="opt-title-size" min="20" max="80" value="40"></label>
+    <label>Album Size (<span id="opt-album-val">30px</span>):<input type="range" id="opt-album-size" min="16" max="60" value="30"></label>
+    <label>Artist Size (<span id="opt-artist-val">20px</span>):<input type="range" id="opt-artist-size" min="12" max="40" value="20"></label>
+    <label>Progress Radius (<span id="opt-radius-val">5px</span>):<input type="range" id="opt-radius" min="0" max="20" value="5"></label>
+    <label>Background URL:<input type="text" id="opt-bg-url" placeholder="https://...jpg"></label>
+    <label>Fit Mode:<select id="opt-bg-fit"><option value="cover">Cover</option><option value="contain">Contain</option></select></label>
     <hr>
-
-    <!-- Presets -->
     <input type="text" id="preset-name" placeholder="Preset name">
     <button id="save-preset">Save Preset</button>
     <select id="preset-list"><option value="">-- Load Preset --</option></select>
