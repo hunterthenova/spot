@@ -1,29 +1,20 @@
+/* style.css */
 body {
   font-family: Arial, sans-serif;
-  text-align: center;
-  background-color: #121212;
-  color: white;
   margin: 0;
   padding: 0;
   overflow: hidden;
+  background-color: #121212;
+  color: #fff;
+  transition: background 0.3s ease;
 }
 
-/* Login container centering */
-#login-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-/* Now playing display */
 #media-display {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   height: 100vh;
-  transition: background 0.3s;
 }
 
 #cover-art {
@@ -33,7 +24,8 @@ body {
   margin-bottom: 20px;
 }
 
-#details { margin-bottom: 20px; }
+#details { margin-bottom: 20px; text-align: center; }
+
 #title { font-size: 40px; font-weight: bold; }
 #album { font-size: 30px; }
 #artist { font-size: 20px; font-weight: lighter; }
@@ -41,89 +33,93 @@ body {
 #progress-container {
   display: flex;
   align-items: center;
-  justify-content: center;
   width: 80%;
   margin: 10px auto;
 }
+
+#progress-container span {
+  font-size: 14px;
+  color: #bbb;
+}
+
 #progress-bar-container {
   flex: 1;
   height: 10px;
   background-color: #444;
   border-radius: 5px;
-  overflow: hidden;
+  margin: 0 10px;
   position: relative;
 }
+
 #progress-bar {
-  height: 100%;
   width: 0%;
-  transition: width 0.5s;
+  height: 100%;
+  background-color: #1db954;
+  transition: width 0.5s ease;
 }
 
 #spotify-link {
-  display: inline-block;
   margin-top: 20px;
   padding: 10px 20px;
-  color: white;
   background-color: #1db954;
+  color: #fff;
   text-decoration: none;
   border-radius: 5px;
   font-weight: bold;
+  transition: background 0.3s ease;
 }
+#spotify-link:hover { background-color: #14833b; }
 
-/* Top controls: fullscreen + menu */
-#controls {
+#buttons {
   position: fixed;
   top: 10px;
   right: 10px;
+  z-index: 1000;
   display: flex;
   flex-direction: column;
-  z-index: 9999;
 }
-#controls button {
+#buttons button {
   background: transparent;
   border: none;
-  color: white;
+  color: #fff;
   font-size: 24px;
   margin-bottom: 8px;
-  opacity: 0.6;
   cursor: pointer;
-  transition: opacity .3s;
+  opacity: 0.6;
+  transition: opacity 0.3s;
 }
-#controls button:hover { opacity: 1; }
+#buttons button:hover { opacity: 1; }
 
-/* Sidebar */
 #sidebar {
   position: fixed;
   top: 0;
   right: -300px;
   width: 280px;
   height: 100%;
-  background: #1e1e1e;
+  background: rgba(20,20,20,0.95);
   padding: 20px;
-  box-shadow: -2px 0 5px rgba(0,0,0,.5);
-  transition: right .3s;
+  box-shadow: -4px 0 8px rgba(0,0,0,0.5);
+  transition: right 0.3s ease;
+  z-index: 999;
   overflow-y: auto;
-  z-index: 9998;
 }
 #sidebar.open { right: 0; }
-#sidebar h3 { margin-top: 0; }
+#sidebar h2 { margin-top: 0; color: #1db954; }
 #sidebar label {
   display: block;
-  margin: 15px 0;
-  text-align: left;
+  margin: 12px 0;
+  font-size: 14px;
 }
-#sidebar input,
-#sidebar select,
-#sidebar button {
+#sidebar input[type="range"],
+#sidebar input[type="color"],
+#sidebar input[type="text"],
+#sidebar select {
   width: 100%;
-  margin-top: 5px;
-  padding: 5px;
-  border-radius: 3px;
-  border: none;
+  margin-top: 4px;
 }
+#sidebar button { margin-top: 10px; width: 100%; padding: 8px; cursor: pointer; }
 
-/* Hide sidebar & controls in fullscreen */
-:fullscreen #controls,
+:fullscreen #buttons,
 :fullscreen #sidebar {
-  display: none;
+  visibility: hidden;
 }
