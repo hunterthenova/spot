@@ -28,8 +28,6 @@
       </div>
       <span id="time-remaining">0:00</span>
     </div>
-
-    <a id="spotify-link" hidden>Open in Spotify</a>
   </div>
 
   <!-- Menu / Fullscreen Buttons -->
@@ -48,7 +46,6 @@
       <label><input type="checkbox" class="opt-toggle" data-target="#cover-art" checked> Cover</label>
       <label><input type="checkbox" class="opt-toggle" data-target="#details" checked> Details</label>
       <label><input type="checkbox" class="opt-toggle" data-target="#progress-container" checked> Progress</label>
-      <label><input type="checkbox" class="opt-toggle" data-target="#spotify-link" checked> Spotify Link</label>
     </fieldset>
 
     <!-- Colors -->
@@ -66,18 +63,18 @@
     </label>
 
     <!-- Font Sizes -->
-    <label>Title Size (&lt;span id="opt-title-val"&gt;40px&lt;/span&gt;):
+    <label>Title Size (<span id="opt-title-val">40px</span>):
       <input type="range" id="opt-title-size" min="20" max="80" value="40">
     </label>
-    <label>Album Size (&lt;span id="opt-album-val"&gt;30px&lt;/span&gt;):
+    <label>Album Size (<span id="opt-album-val">30px</span>):
       <input type="range" id="opt-album-size" min="16" max="60" value="30">
     </label>
-    <label>Artist Size (&lt;span id="opt-artist-val"&gt;20px&lt;/span&gt;):
+    <label>Artist Size (<span id="opt-artist-val">20px</span>):
       <input type="range" id="opt-artist-size" min="12" max="40" value="20">
     </label>
 
     <!-- Progress bar radius -->
-    <label>Progress Radius (&lt;span id="opt-radius-val"&gt;5px&lt;/span&gt;):
+    <label>Progress Radius (<span id="opt-radius-val">5px</span>):
       <input type="range" id="opt-radius" min="0" max="20" value="5">
     </label>
 
@@ -99,7 +96,6 @@
     <button id="save-preset">Save Preset</button>
     <select id="preset-list"><option value="">-- Load Preset --</option></select>
     <button id="delete-preset">Delete</button>
-
     <button id="reset-defaults">Reset Defaults</button>
   </aside>
 
