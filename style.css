@@ -1,12 +1,13 @@
 /* style.css */
 body {
   font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
+  margin: 0; padding: 0;
   overflow: hidden;
   background-color: #121212;
+  background-size: cover;
+  background-position: center;
   color: #fff;
-  transition: background 0.3s ease;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 #media-display {
@@ -15,31 +16,35 @@ body {
   align-items: center;
   justify-content: center;
   height: 100vh;
+  padding: 10px;
 }
 
 #cover-art {
-  max-width: 50%;
-  max-height: 50%;
+  max-width: 50%; max-height: 50%;
   border-radius: 10px;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+#details {
+  text-align: center;
   margin-bottom: 20px;
 }
 
-#details { margin-bottom: 20px; text-align: center; }
+#title, #album, #artist {
+  margin: 4px 0;
+}
 
-#title { font-size: 40px; font-weight: bold; }
-#album { font-size: 30px; }
-#artist { font-size: 20px; font-weight: lighter; }
+#title { font-weight: bold; }
+#artist { font-weight: lighter; }
 
 #progress-container {
-  display: flex;
-  align-items: center;
-  width: 80%;
-  margin: 10px auto;
+  display: flex; align-items: center;
+  width: 80%; margin: 10px auto;
 }
 
 #progress-container span {
   font-size: 14px;
-  color: #bbb;
 }
 
 #progress-bar-container {
@@ -47,55 +52,35 @@ body {
   height: 10px;
   background-color: #444;
   border-radius: 5px;
+  overflow: hidden;
   margin: 0 10px;
-  position: relative;
 }
 
 #progress-bar {
-  width: 0%;
   height: 100%;
+  width: 0%;
   background-color: #1db954;
-  transition: width 0.5s ease;
+  transition: width 0.5s ease, background-color 0.3s ease;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
 }
-
-#spotify-link {
-  margin-top: 20px;
-  padding: 10px 20px;
-  background-color: #1db954;
-  color: #fff;
-  text-decoration: none;
-  border-radius: 5px;
-  font-weight: bold;
-  transition: background 0.3s ease;
-}
-#spotify-link:hover { background-color: #14833b; }
 
 #buttons {
-  position: fixed;
-  top: 10px;
-  right: 10px;
+  position: fixed; top: 10px; right: 10px;
+  display: flex; flex-direction: column;
   z-index: 1000;
-  display: flex;
-  flex-direction: column;
 }
 #buttons button {
-  background: transparent;
-  border: none;
-  color: #fff;
-  font-size: 24px;
-  margin-bottom: 8px;
-  cursor: pointer;
-  opacity: 0.6;
-  transition: opacity 0.3s;
+  background: transparent; border: none;
+  color: #fff; font-size: 24px;
+  margin-bottom: 8px; cursor: pointer;
+  opacity: 0.6; transition: opacity 0.3s;
 }
 #buttons button:hover { opacity: 1; }
 
 #sidebar {
-  position: fixed;
-  top: 0;
-  right: -300px;
-  width: 280px;
-  height: 100%;
+  position: fixed; top: 0; right: -300px;
+  width: 300px; height: 100%;
   background: rgba(20,20,20,0.95);
   padding: 20px;
   box-shadow: -4px 0 8px rgba(0,0,0,0.5);
@@ -106,18 +91,24 @@ body {
 #sidebar.open { right: 0; }
 #sidebar h2 { margin-top: 0; color: #1db954; }
 #sidebar label {
-  display: block;
-  margin: 12px 0;
+  display: block; margin: 12px 0;
   font-size: 14px;
 }
 #sidebar input[type="range"],
 #sidebar input[type="color"],
 #sidebar input[type="text"],
 #sidebar select {
-  width: 100%;
-  margin-top: 4px;
+  width: 100%; margin-top: 4px;
 }
-#sidebar button { margin-top: 10px; width: 100%; padding: 8px; cursor: pointer; }
+#sidebar span { float: right; }
+
+#sidebar button {
+  width: 100%; padding: 8px;
+  margin-top: 8px;
+  background: #1db954; border: none;
+  color: #fff; cursor: pointer;
+  font-size: 14px; border-radius: 4px;
+}
 
 :fullscreen #buttons,
 :fullscreen #sidebar {
