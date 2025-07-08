@@ -1,24 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Spotify Now Playing</title>
-  <link rel="stylesheet" href="style.css">
-  <!-- Supabase JS -->
+  <link rel="stylesheet" href="style.css"/>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <!-- Expose env -->
-  <script src="/env.js"></script>
+  <!-- load your env-vars script directly -->
+  <script src="/api/env.js"></script>
 </head>
 <body>
-  <!-- Login Button -->
   <div id="login-container">
     <button id="login-btn">Login with Spotify</button>
   </div>
-
-  <!-- Now Playing Display -->
   <div id="media-display" hidden>
-    <img id="cover-art" alt="Album cover art">
+    <img id="cover-art" alt="Album cover art"/>
     <div id="details">
       <div id="title"></div>
       <div id="album"></div>
@@ -33,28 +29,24 @@
     </div>
     <a id="spotify-link" target="_blank">Open in Spotify</a>
   </div>
-
-  <!-- Top Controls -->
   <div id="controls">
     <button id="fullscreen-btn">⛶</button>
     <button id="menu-btn">☰</button>
   </div>
-
-  <!-- Customization Sidebar -->
   <aside id="sidebar">
     <h3>Customize</h3>
     <label>
       Progress bar color:
-      <input type="color" id="bar-color-picker" value="#1db954">
+      <input type="color" id="bar-color-picker" value="#1db954"/>
     </label>
     <label>
       Background URL:
-      <input type="text" id="bg-url" placeholder="Image URL">
+      <input type="text" id="bg-url" placeholder="Image URL"/>
       <button id="bg-apply">Apply</button>
     </label>
     <label>
       Preset name:
-      <input type="text" id="preset-name" placeholder="My preset">
+      <input type="text" id="preset-name" placeholder="My preset"/>
       <button id="save-preset">Save</button>
     </label>
     <label>
@@ -64,7 +56,6 @@
       <button id="delete-preset">Delete</button>
     </label>
   </aside>
-
   <script src="script.js"></script>
 </body>
 </html>
