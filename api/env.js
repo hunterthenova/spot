@@ -1,4 +1,4 @@
-// /api/env.js
+// stays exactly the same
 export default function handler(req, res) {
   res.setHeader('Content-Type', 'application/javascript');
   res.send(`
