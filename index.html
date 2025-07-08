@@ -1,25 +1,27 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Spotify Now Playing</title>
-  <link rel="stylesheet" href="style.css"/>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <!-- load your env-vars script directly -->
-  <script src="/api/env.js"></script>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="login-container">
+  <!-- Login Button Container -->
+  <div id="login-container" style="display: none;">
     <button id="login-btn">Login with Spotify</button>
   </div>
+
+  <!-- Media Display Container -->
   <div id="media-display" hidden>
-    <img id="cover-art" alt="Album cover art"/>
+    <img id="cover-art" alt="Album cover art">
     <div id="details">
       <div id="title"></div>
       <div id="album"></div>
       <div id="artist"></div>
     </div>
+
     <div id="progress-container">
       <span id="time-elapsed">0:00</span>
       <div id="progress-bar-container">
@@ -27,35 +29,50 @@
       </div>
       <span id="time-remaining">0:00</span>
     </div>
+
     <a id="spotify-link" target="_blank">Open in Spotify</a>
   </div>
-  <div id="controls">
-    <button id="fullscreen-btn">⛶</button>
+
+  <!-- Menu / Fullscreen Buttons -->
+  <div id="buttons">
     <button id="menu-btn">☰</button>
+    <button id="fullscreen-btn">⛶</button>
   </div>
+
+  <!-- Customization Sidebar -->
   <aside id="sidebar">
-    <h3>Customize</h3>
-    <label>
-      Progress bar color:
-      <input type="color" id="bar-color-picker" value="#1db954"/>
+    <h2>Customize</h2>
+
+    <label>Progress Bar Color:
+      <input type="color" id="opt-bar-color" value="#1db954">
     </label>
-    <label>
-      Background URL:
-      <input type="text" id="bg-url" placeholder="Image URL"/>
-      <button id="bg-apply">Apply</button>
+
+    <label>Background Image URL:
+      <input type="text" id="opt-bg-url" placeholder="https://...jpg">
     </label>
-    <label>
-      Preset name:
-      <input type="text" id="preset-name" placeholder="My preset"/>
-      <button id="save-preset">Save</button>
+
+    <label>Title Font Size:
+      <input type="range" id="opt-title-size" min="20" max="80" value="40">
     </label>
-    <label>
-      Load preset:
-      <select id="preset-list"></select>
-      <button id="load-preset">Load</button>
-      <button id="delete-preset">Delete</button>
+
+    <label>Album Font Size:
+      <input type="range" id="opt-album-size" min="16" max="60" value="30">
     </label>
+
+    <label>Artist Font Size:
+      <input type="range" id="opt-artist-size" min="12" max="40" value="20">
+    </label>
+
+    <hr>
+
+    <input type="text" id="preset-name" placeholder="Preset name">
+    <button id="save-preset">Save Preset</button>
+    <select id="preset-list"><option value="">-- Load Preset --</option></select>
+    <button id="delete-preset">Delete</button>
+
+    <button id="reset-defaults">Reset Defaults</button>
   </aside>
+
   <script src="script.js"></script>
 </body>
 </html>
