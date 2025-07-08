@@ -1,40 +1,106 @@
-/* Basic reset */
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family: monospace; background: #111; color: #eee; height:100vh; overflow:hidden; }
-
-#top-bar {
-  position: fixed; top:0; left:0; right:0; height:50px;
-  background:#000; display:flex; align-items:center; padding:0 1rem;
-  z-index:100;
+body {
+  margin: 0;
+  font-family: monospace;
+  background-color: #000;
+  color: #fff;
+  background-size: cover;
+  background-position: center;
+  transition: background-image 0.3s ease-in-out;
 }
-#top-bar button { margin-right:1rem; background:#1DB954; border:none; padding:0.5rem 1rem; color:#fff; cursor:pointer; }
-#hamburger {
-  margin-left:auto; width:30px; cursor:pointer;
-  display:flex; flex-direction:column; justify-content:space-between; height:20px;
-}
-#hamburger span {
-  display:block; height:3px; background:#fff; border-radius:2px;
-}
-
-#sidebar {
-  position: fixed; top:50px; right:0; width:250px; height:calc(100% - 50px);
-  background:#222; padding:1rem; overflow-y:auto; transition: transform .3s ease;
-}
-#sidebar.hidden { transform: translateX(100%); }
-#sidebar h2,h3 { margin-bottom:0.5rem; }
-#sidebar label { display:block; margin:0.5rem 0; }
-#sidebar input[type="text"], #sidebar input[type="color"] {
-  width:100%; margin-top:0.3rem; padding:0.3rem;
-}
-#sidebar button { margin-top:0.5rem; width:100%; padding:0.5rem; background:#1DB954; border:none; color:#fff; cursor:pointer; }
 
 #app {
-  position:absolute; top:50px; left:0; right:0; bottom:0;
-  display:flex; align-items:center; justify-content:center; padding:1rem;
-  background-size:cover; background-position:center;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }
-#now-playing { white-space: pre-wrap; }
 
-/* Hide sidebar & top-bar in fullscreen */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #111;
+  padding: 10px 20px;
+}
+
+#menu-icon {
+  font-size: 24px;
+  cursor: pointer;
+  user-select: none;
+}
+
+main {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#now-playing {
+  max-width: 600px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  backdrop-filter: blur(4px);
+}
+
+#progress-bar-container {
+  margin-top: 20px;
+}
+
+#progress-bar {
+  background: #333;
+  height: 10px;
+  width: 100%;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+#progress {
+  height: 100%;
+  background: #1db954;
+  width: 0%;
+  transition: width 0.2s linear;
+}
+
+#timestamps {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9em;
+  margin-top: 5px;
+}
+
+/* Sidebar */
+#sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 280px;
+  height: 100%;
+  background: #111;
+  padding: 20px;
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+  z-index: 10;
+}
+
+#sidebar.open {
+  transform: translateX(0);
+}
+
+#sidebar h3 {
+  margin-top: 0;
+}
+
+#sidebar label,
+#sidebar button {
+  display: block;
+  margin-bottom: 15px;
+}
+
+/* Hide sidebar and menu in fullscreen */
 :fullscreen #sidebar,
-:fullscreen #top-bar { display:none; }
+:-webkit-full-screen #sidebar,
+:fullscreen #menu-icon,
+:-webkit-full-screen #menu-icon {
+  display: none;
+}
