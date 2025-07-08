@@ -1,158 +1,102 @@
-// --- CONFIGURATION ---
-// these should be injected by your Vercel build process:
-const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
-const REDIRECT_URI     = window.location.origin + window.location.pathname;
-const SCOPES           = 'user-read-currently-playing';
+// Vercel will inject these at build‐time:
+const supabaseUrl = process.env.SUPABASE_URL
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY
 
-// --- INIT SUPABASE ---
-const { createClient } = supabase;
-const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
-// --- UI ELEMENTS ---
-const signInBtn      = document.getElementById('sign-in-btn');
-const signOutBtn     = document.getElementById('sign-out-btn');
-const nowPlayingPre  = document.getElementById('now-playing');
-const hamburger      = document.getElementById('hamburger');
-const sidebar        = document.getElementById('sidebar');
-const barColorPicker = document.getElementById('bar-color-picker');
-const bgImageInput   = document.getElementById('bg-image-input');
-const applyStyleBtn  = document.getElementById('apply-style-btn');
-const savePresetBtn  = document.getElementById('save-preset-btn');
-const presetList     = document.getElementById('preset-list');
+let user = null
+let presets = {}
 
-// generate or load a pseudo‑user ID
-let userId = localStorage.getItem('notes_user_id');
-if (!userId) {
-  userId = crypto.randomUUID();
-  localStorage.setItem('notes_user_id', userId);
+window.addEventListener('load', async () => {
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) {
+    await supabase.auth.signInWithOAuth({ provider: 'spotify' })
+    return
+  }
+  user = session.user
+  loadPreset()
+  startNowPlaying()
+})
+
+supabase.auth.onAuthStateChange((_event, session) => {
+  if (session) {
+    user = session.user
+    loadPreset()
+    startNowPlaying()
+  }
+})
+
+function logout() {
+  supabase.auth.signOut()
+  location.reload()
 }
 
-// --- SPOTIFY FLOW ---
-function handleSpotifyCallback() {
-  const hash = window.location.hash.substring(1);
-  const params = new URLSearchParams(hash);
-  const token = params.get('access_token');
-  if (token) {
-    window.history.replaceState({}, document.title, REDIRECT_URI);
-    localStorage.setItem('spotify_token', token);
-    upsertUserToken(token);
-    signInBtn.hidden = true;
-    signOutBtn.hidden = false;
-    startPolling();
+// Simulate now playing (replace with Spotify SDK if needed)
+function startNowPlaying() {
+  const title = document.getElementById('title')
+  const artist = document.getElementById('artist')
+  const progress = document.getElementById('progress')
+  const currentTime = document.getElementById('current-time')
+  const duration = document.getElementById('duration')
+
+  let time = 0
+  const total = 198
+
+  title.textContent = 'Title: Heather'
+  artist.textContent = 'Artist: Conan Gray'
+  duration.textContent = '03:18'
+
+  setInterval(() => {
+    time = (time + 1) % total
+    progress.style.width = `${(time / total) * 100}%`
+    const mins = Math.floor(time / 60).toString().padStart(2, '0')
+    const secs = (time % 60).toString().padStart(2, '0')
+    currentTime.textContent = `${mins}:${secs}`
+  }, 1000)
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open')
+}
+
+document.getElementById('bg-upload').addEventListener('change', (e) => {
+  const file = e.target.files[0]
+  if (file) {
+    const reader = new FileReader()
+    reader.onload = () => {
+      document.body.style.backgroundImage = `url(${reader.result})`
+      presets.bg = reader.result
+    }
+    reader.readAsDataURL(file)
+  }
+})
+
+document.getElementById('bar-color').addEventListener('input', (e) => {
+  document.getElementById('progress').style.backgroundColor = e.target.value
+  presets.barColor = e.target.value
+})
+
+async function savePreset() {
+  if (!user) return
+  await supabase.from('presets').upsert({
+    user_id: user.id,
+    preset: presets,
+  }, { onConflict: 'user_id' })
+  alert('Preset saved!')
+}
+
+async function loadPreset() {
+  const { data } = await supabase.from('presets').select('preset').eq('user_id', user.id).single()
+  if (!data || !data.preset) return
+
+  presets = data.preset
+  if (presets.bg) {
+    document.body.style.backgroundImage = `url(${presets.bg})`
+  }
+  if (presets.barColor) {
+    document.getElementById('progress').style.backgroundColor = presets.barColor
+    document.getElementById('bar-color').value = presets.barColor
   }
 }
-
-async function upsertUserToken(token) {
-  await supabaseClient
-    .from('users')
-    .upsert({ id: userId, spotify_token: token });
-}
-
-function signInWithSpotify() {
-  const authUrl =
-    `https://accounts.spotify.com/authorize?` +
-    `response_type=token&client_id=${SPOTIFY_CLIENT_ID}` +
-    `&scope=${encodeURIComponent(SCOPES)}` +
-    `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
-  window.location = authUrl;
-}
-
-async function signOut() {
-  localStorage.removeItem('spotify_token');
-  signInBtn.hidden = false;
-  signOutBtn.hidden = true;
-  nowPlayingPre.textContent = `Title: –\nArtist: –\n\n[------------------------------]\n\n00:00 – 00:00`;
-  stopPolling();
-}
-
-// --- POLLING SPOTIFY ---
-let pollInterval;
-function startPolling() {
-  fetchNowPlaying();
-  pollInterval = setInterval(fetchNowPlaying, 5000);
-}
-function stopPolling() {
-  clearInterval(pollInterval);
-}
-
-async function fetchNowPlaying() {
-  const token = localStorage.getItem('spotify_token');
-  if (!token) return;
-  const resp = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  if (resp.status === 204 || resp.status > 400) return;
-  const data = await resp.json();
-  const { name, artists, progress_ms, item } = data;
-  const duration = item.duration_ms;
-  const barLen = 30;
-  const filled = Math.round((progress_ms / duration) * barLen);
-  const bar = `[${'#'.repeat(filled)}${'-'.repeat(barLen - filled)}]`;
-  const fmt = ms => new Date(ms).toISOString().substr(14, 5);
-  nowPlayingPre.textContent =
-    `Title: ${name}\n` +
-    `Artist: ${artists.map(a=>a.name).join(', ')}\n\n` +
-    `${bar}\n\n` +
-    `${fmt(progress_ms)} – ${fmt(duration)}`;
-}
-
-// --- CUSTOMIZATION & PRESETS ---
-function applyStyles(cfg) {
-  document.body.style.setProperty('--bar-color', cfg.barColor);
-  document.body.style.backgroundImage = cfg.bgImage ? `url('${cfg.bgImage}')` : '';
-}
-applyStyleBtn.onclick = () => {
-  const cfg = {
-    barColor: barColorPicker.value,
-    bgImage: bgImageInput.value.trim()
-  };
-  applyStyles(cfg);
-};
-
-async function loadPresets() {
-  const { data, error } = await supabaseClient
-    .from('presets')
-    .select('*')
-    .eq('user_id', userId);
-  presetList.innerHTML = '';
-  if (data) {
-    data.forEach(p => {
-      const li = document.createElement('li');
-      li.textContent = p.name;
-      li.onclick = () => applyStyles({ barColor: p.bar_color, bgImage: p.bg_image });
-      presetList.appendChild(li);
-    });
-  }
-}
-
-savePresetBtn.onclick = async () => {
-  const name = prompt('Preset name?');
-  if (!name) return;
-  const cfg = {
-    user_id: userId,
-    name,
-    bar_color: barColorPicker.value,
-    bg_image: bgImageInput.value.trim()
-  };
-  await supabaseClient
-    .from('presets')
-    .upsert(cfg, { onConflict: ['user_id', 'name'] });
-  loadPresets();
-};
-
-// --- SIDEBAR & FULLSCREEN ---
-hamburger.onclick = () => sidebar.classList.toggle('hidden');
-document.addEventListener('fullscreenchange', () => {
-  const hide = !!document.fullscreenElement;
-  sidebar.style.display   = hide ? 'none' : '';
-  document.getElementById('top-bar').style.display = hide ? 'none' : 'flex';
-});
-
-// --- HOOKS & INIT ---
-signInBtn.onclick  = signInWithSpotify;
-signOutBtn.onclick = signOut;
-handleSpotifyCallback();
-loadPresets();
