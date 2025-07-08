@@ -38,47 +38,50 @@
   <!-- Sidebar -->
   <aside id="sidebar">
     <h2>Customize</h2>
+
     <fieldset>
       <legend>Show/Hide</legend>
       <label><input type="checkbox" class="opt-toggle" data-target="#cover-art" checked> Cover</label>
       <label><input type="checkbox" class="opt-toggle" data-target="#details" checked> Details</label>
       <label><input type="checkbox" class="opt-toggle" data-target="#progress-container" checked> Progress</label>
     </fieldset>
-    <label>Progress Color:<input type="color" id="opt-bar-color" value="#1db954"></label>
-    <label>Title Color:<input type="color" id="opt-title-color" value="#fff"></label>
-    <label>Album Color:<input type="color" id="opt-album-color" value="#fff"></label>
-    <label>Artist Color:<input type="color" id="opt-artist-color" value="#bbb"></label>
 
-    <label>Title Size:
-      <input type="range" id="opt-title-size" min="20" max="80" value="40">
-      <input type="number" id="opt-title-num" min="20" max="80" value="40">px
-    </label>
-    <label>Album Size:
-      <input type="range" id="opt-album-size" min="16" max="60" value="30">
-      <input type="number" id="opt-album-num" min="16" max="60" value="30">px
-    </label>
-    <label>Artist Size:
-      <input type="range" id="opt-artist-size" min="12" max="40" value="20">
-      <input type="number" id="opt-artist-num" min="12" max="40" value="20">px
-    </label>
-    <label>Radius:
-      <input type="range" id="opt-radius" min="0" max="20" value="5">
-      <input type="number" id="opt-radius-num" min="0" max="20" value="5">px
-    </label>
+    <div class="option-group">
+      <h3>Colors</h3>
+      <label>Progress Bar Color:<input type="color" id="opt-bar-color" value="#1db954"></label>
+      <label>Progress Text Color:<input type="color" id="opt-prog-text-color" value="#1db954"></label>
+      <label>Sync Text with Bar:<input type="checkbox" id="opt-sync-prog-text"></label>
+      <label>Title Color:<input type="color" id="opt-title-color" value="#fff"></label>
+      <label>Album Color:<input type="color" id="opt-album-color" value="#fff"></label>
+      <label>Artist Color:<input type="color" id="opt-artist-color" value="#bbb"></label>
+    </div>
 
-    <label>Background Image URL:<input type="text" id="opt-bg-url" placeholder="https://..."></label>
-    <label>Background Color:<input type="color" id="opt-bg-color" value="#121212"></label>
-    <label>Sync BG Color: <input type="checkbox" id="opt-sync-color"></label>
-    <label>Fit:<select id="opt-bg-fit"><option>cover</option><option>contain</option></select></label>
+    <div class="option-group">
+      <h3>Font Sizes</h3>
+      <label>Title Size:<input type="range" id="opt-title-size" min="20" max="80" value="40"><input type="number" id="opt-title-num" min="20" max="80" value="40">px</label>
+      <label>Album Size:<input type="range" id="opt-album-size" min="16" max="60" value="30"><input type="number" id="opt-album-num" min="16" max="60" value="30">px</label>
+      <label>Artist Size:<input type="range" id="opt-artist-size" min="12" max="40" value="20"><input type="number" id="opt-artist-num" min="12" max="40" value="20">px</label>
+      <label>Radius:<input type="range" id="opt-radius" min="0" max="20" value="5"><input type="number" id="opt-radius-num" min="0" max="20" value="5">px</label>
+    </div>
+
+    <div class="option-group">
+      <h3>Background</h3>
+      <label>Image URL:<input type="text" id="opt-bg-url" placeholder="https://..."></label>
+      <label>Color:<input type="color" id="opt-bg-color" value="#121212"></label>
+      <label>Sync with Cover:<input type="checkbox" id="opt-sync-color"></label>
+      <label>Fit:<select id="opt-bg-fit"><option>cover</option><option>contain</option></select></label>
+    </div>
 
     <hr>
-    <input type="text" id="preset-name" placeholder="Preset name">
-    <button id="save-preset">Save</button>
-    <select id="preset-list">
-      <option value="Default">Default</option>
-    </select>
-    <button id="delete-preset">Delete</button>
-    <button id="reset-defaults">Reset</button>
+
+    <div class="option-group">
+      <h3>Presets</h3>
+      <input type="text" id="preset-name" placeholder="Preset name">
+      <button id="save-preset">Save</button>
+      <select id="preset-list"><option value="Default">Default</option></select>
+      <button id="delete-preset">Delete</button>
+      <button id="reset-defaults">Reset</button>
+    </div>
   </aside>
 
   <script src="script.js"></script>
