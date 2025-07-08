@@ -8,12 +8,10 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Login Button Container -->
   <div id="login-container" style="display: none;">
     <button id="login-btn">Login with Spotify</button>
   </div>
 
-  <!-- Media Display Container -->
   <div id="media-display" hidden>
     <img id="cover-art" alt="Album cover art">
     <div id="details">
@@ -29,38 +27,76 @@
       </div>
       <span id="time-remaining">0:00</span>
     </div>
-
-    <a id="spotify-link" target="_blank">Open in Spotify</a>
   </div>
 
-  <!-- Menu / Fullscreen Buttons -->
   <div id="buttons">
     <button id="menu-btn">☰</button>
     <button id="fullscreen-btn">⛶</button>
   </div>
 
-  <!-- Customization Sidebar -->
   <aside id="sidebar">
     <h2>Customize</h2>
 
-    <label>Progress Bar Color:
+    <label>
+      Progress Bar Color:
       <input type="color" id="opt-bar-color" value="#1db954">
     </label>
 
-    <label>Background Image URL:
+    <label>
+      Background Image URL:
       <input type="text" id="opt-bg-url" placeholder="https://...jpg">
     </label>
 
-    <label>Title Font Size:
+    <label>
+      Background Mode:
+      <select id="opt-bg-mode">
+        <option value="cover">Cover</option>
+        <option value="contain">Contain</option>
+        <option value="auto">Auto</option>
+      </select>
+    </label>
+
+    <label>
+      Cover Art Visible:
+      <input type="checkbox" id="opt-show-cover" checked>
+    </label>
+    <label>
+      Details Visible:
+      <input type="checkbox" id="opt-show-details" checked>
+    </label>
+    <label>
+      Progress Bar Visible:
+      <input type="checkbox" id="opt-show-progress" checked>
+    </label>
+
+    <label>
+      Title Color:
+      <input type="color" id="opt-title-color" value="#ffffff">
+    </label>
+    <label>
+      Title Font Size:
       <input type="range" id="opt-title-size" min="20" max="80" value="40">
+      <span id="opt-title-size-val">40px</span>
     </label>
 
-    <label>Album Font Size:
+    <label>
+      Album Color:
+      <input type="color" id="opt-album-color" value="#ffffff">
+    </label>
+    <label>
+      Album Font Size:
       <input type="range" id="opt-album-size" min="16" max="60" value="30">
+      <span id="opt-album-size-val">30px</span>
     </label>
 
-    <label>Artist Font Size:
+    <label>
+      Artist Color:
+      <input type="color" id="opt-artist-color" value="#bbbbbb">
+    </label>
+    <label>
+      Artist Font Size:
       <input type="range" id="opt-artist-size" min="12" max="40" value="20">
+      <span id="opt-artist-size-val">20px</span>
     </label>
 
     <hr>
@@ -68,9 +104,8 @@
     <input type="text" id="preset-name" placeholder="Preset name">
     <button id="save-preset">Save Preset</button>
     <select id="preset-list"><option value="">-- Load Preset --</option></select>
-    <button id="delete-preset">Delete</button>
-
-    <button id="reset-defaults">Reset Defaults</button>
+    <button id="delete-preset">Delete Preset</button>
+    <button id="reset-defaults">Reset All</button>
   </aside>
 
   <script src="script.js"></script>
