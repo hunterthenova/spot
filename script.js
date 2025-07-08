@@ -1,4 +1,4 @@
-// script.js
+// Element refs
 const menuBtn       = document.getElementById('menu-btn');
 const sidebar       = document.getElementById('sidebar');
 const fullscreenBtn = document.getElementById('fullscreen-btn');
@@ -7,218 +7,257 @@ const coverArt      = document.getElementById('cover-art');
 const titleElem     = document.getElementById('title');
 const albumElem     = document.getElementById('album');
 const artistElem    = document.getElementById('artist');
-const progBar       = document.getElementById('progress-bar');
-const timeElapsed   = document.getElementById('time-elapsed');
-const timeRemaining = document.getElementById('time-remaining');
+const progressBar   = document.getElementById('progress-bar');
 const loginContainer= document.getElementById('login-container');
 const loginBtn      = document.getElementById('login-btn');
 
-// Controls
-const opts = {
-  barColor:     document.getElementById('opt-bar-color'),
-  bgUrl:        document.getElementById('opt-bg-url'),
-  bgMode:       document.getElementById('opt-bg-mode'),
-  showCover:    document.getElementById('opt-show-cover'),
-  showDetails:  document.getElementById('opt-show-details'),
-  showProgress: document.getElementById('opt-show-progress'),
-  titleColor:   document.getElementById('opt-title-color'),
-  titleSize:    document.getElementById('opt-title-size'),
-  titleVal:     document.getElementById('opt-title-size-val'),
-  albumColor:   document.getElementById('opt-album-color'),
-  albumSize:    document.getElementById('opt-album-size'),
-  albumVal:     document.getElementById('opt-album-size-val'),
-  artistColor:  document.getElementById('opt-artist-color'),
-  artistSize:   document.getElementById('opt-artist-size'),
-  artistVal:    document.getElementById('opt-artist-size-val'),
-  presetName:   document.getElementById('preset-name'),
-  presetList:   document.getElementById('preset-list'),
-  saveBtn:      document.getElementById('save-preset'),
-  deleteBtn:    document.getElementById('delete-preset'),
-  resetBtn:     document.getElementById('reset-defaults')
-};
+// Custom controls
+const toggles    = document.querySelectorAll('.opt-toggle');
+const barColor   = document.getElementById('opt-bar-color');
+const titleColor = document.getElementById('opt-title-color');
+const albumColor = document.getElementById('opt-album-color');
+const artistColor= document.getElementById('opt-artist-color');
+const titleSize  = document.getElementById('opt-title-size');
+const albumSize  = document.getElementById('opt-album-size');
+const artistSize = document.getElementById('opt-artist-size');
+const radius     = document.getElementById('opt-radius');
+const bgUrl      = document.getElementById('opt-bg-url');
+const bgFit      = document.getElementById('opt-bg-fit');
+const presetName = document.getElementById('preset-name');
+const saveBtn    = document.getElementById('save-preset');
+const listPresets= document.getElementById('preset-list');
+const delBtn     = document.getElementById('delete-preset');
+const resetBtn   = document.getElementById('reset-defaults');
 
-// Spotify creds
-const clientId = '2658d08b17ae44bda4d79ee2c1fa905d';
+// Display values
+const titleVal   = document.getElementById('opt-title-val');
+const albumVal   = document.getElementById('opt-album-val');
+const artistVal  = document.getElementById('opt-artist-val');
+const radiusVal  = document.getElementById('opt-radius-val');
+
+// Spotify creds & state
+const clientId    = '2658d08b17ae44bda4d79ee2c1fa905d';
 const redirectUri = 'https://spotify.huntersdesigns.com/';
-const scopes = ['user-read-currently-playing','user-read-playback-state'];
-let token = getCookie('access_token');
+const scopes      = ['user-read-currently-playing','user-read-playback-state'];
+let accessToken   = getCookie('access_token');
 
-// INITIALIZE
+// ──────────────────────────────────────────────────────────────────────
+// Initialization
 initSidebar();
 loadPresets();
-applyStored();
-setupSpotify();
-startRefreshing();
+applyStoredSettings();
+setupSpotifyAuth();
+if (accessToken) startRefreshing();
 
-// SIDEBAR TOGGLE
-menuBtn.addEventListener('click', ()=> sidebar.classList.toggle('open'));
-document.addEventListener('click', e=>{
-  if(!sidebar.contains(e.target)&&!menuBtn.contains(e.target))
+// ── Sidebar toggle ───────────────────────────────────────────────────
+menuBtn.addEventListener('click', () => {
+  sidebar.classList.toggle('open');
+});
+document.addEventListener('click', e => {
+  if (!sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
     sidebar.classList.remove('open');
+  }
 });
 
-// FULLSCREEN
-fullscreenBtn.addEventListener('click', ()=>{
-  if(!document.fullscreenElement) document.documentElement.requestFullscreen();
-  else document.exitFullscreen();
+// ── Fullscreen ───────────────────────────────────────────────────────
+fullscreenBtn.addEventListener('click', () => {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
 });
-document.addEventListener('fullscreenchange', ()=>{
-  if(document.fullscreenElement) sidebar.classList.remove('open');
+document.addEventListener('fullscreenchange', () => {
+  if (document.fullscreenElement) sidebar.classList.remove('open');
 });
 
-// HELPERS: save/load
-function saveTemp(k,v){
-  const tmp = JSON.parse(localStorage.getItem('spotifyTemp')||'{}');
-  tmp[k]=v; localStorage.setItem('spotifyTemp',JSON.stringify(tmp));
-}
-function gather(){
-  return {
-    barColor: opts.barColor.value,
-    bgUrl:    opts.bgUrl.value,
-    bgMode:   opts.bgMode.value,
-    showCover: opts.showCover.checked,
-    showDetails: opts.showDetails.checked,
-    showProgress: opts.showProgress.checked,
-    titleColor: opts.titleColor.value,
-    titleSize: opts.titleSize.value,
-    albumColor: opts.albumColor.value,
-    albumSize: opts.albumSize.value,
-    artistColor: opts.artistColor.value,
-    artistSize: opts.artistSize.value
-  };
-}
-function apply(cfg){
-  if(!cfg) return;
-  document.body.style.backgroundImage = cfg.bgUrl?`url(${cfg.bgUrl})`:'none';
-  document.body.style.backgroundSize  = cfg.bgMode;
-  opts.bgUrl.value = cfg.bgUrl||'';
-  opts.bgMode.value= cfg.bgMode||'cover';
+// ── Toggles ───────────────────────────────────────────────────────────
+toggles.forEach(chk => {
+  chk.addEventListener('change', () => {
+    document.querySelector(chk.dataset.target).style.display =
+      chk.checked ? '' : 'none';
+    saveTemp(chk.dataset.target, chk.checked);
+  });
+});
 
-  progBar.style.backgroundColor = cfg.barColor; opts.barColor.value=cfg.barColor;
-  opts.showCover.checked = cfg.showCover; coverArt.style.display = cfg.showCover?'':'none';
-  opts.showDetails.checked = cfg.showDetails; document.getElementById('details').style.display=cfg.showDetails?'':'none';
-  opts.showProgress.checked = cfg.showProgress; document.getElementById('progress-container').style.display=cfg.showProgress?'flex':'none';
+// ── Color Pickers ────────────────────────────────────────────────────
+barColor.addEventListener('input', () => {
+  document.documentElement.style.setProperty('--barColor', barColor.value);
+  saveTemp('barColor', barColor.value);
+});
+titleColor.addEventListener('input', () => {
+  titleElem.style.color = titleColor.value;
+  saveTemp('titleColor', titleColor.value);
+});
+albumColor.addEventListener('input', () => {
+  albumElem.style.color = albumColor.value;
+  saveTemp('albumColor', albumColor.value);
+});
+artistColor.addEventListener('input', () => {
+  artistElem.style.color = artistColor.value;
+  saveTemp('artistColor', artistColor.value);
+});
 
-  // title
-  titleElem.style.color = cfg.titleColor; opts.titleColor.value=cfg.titleColor;
-  titleElem.style.fontSize = cfg.titleSize+'px'; opts.titleSize.value=cfg.titleSize;
-  opts.titleVal.textContent = cfg.titleSize+'px';
-  // album
-  albumElem.style.color = cfg.albumColor; opts.albumColor.value=cfg.albumColor;
-  albumElem.style.fontSize = cfg.albumSize+'px'; opts.albumSize.value=cfg.albumSize;
-  opts.albumVal.textContent = cfg.albumSize+'px';
-  // artist
-  artistElem.style.color = cfg.artistColor; opts.artistColor.value=cfg.artistColor;
-  artistElem.style.fontSize = cfg.artistSize+'px'; opts.artistSize.value=cfg.artistSize;
-  opts.artistVal.textContent = cfg.artistSize+'px';
-}
-function applyStored(){
-  const t = JSON.parse(localStorage.getItem('spotifyTemp')||'{}');
-  if(t) apply(t);
-}
-function loadPresets(){
+// ── Size Sliders ─────────────────────────────────────────────────────
+[['title', titleSize, titleVal, titleElem],
+ ['album', albumSize, albumVal, albumElem],
+ ['artist', artistSize, artistVal, artistElem]]
+.forEach(([key, slider, valSpan, elem]) => {
+  slider.addEventListener('input', () => {
+    const px = slider.value + 'px';
+    valSpan.textContent = px;
+    elem.style.fontSize = px;
+    saveTemp(key + 'Size', slider.value);
+  });
+});
+
+// ── Radius ────────────────────────────────────────────────────────────
+radius.addEventListener('input', () => {
+  const r = radius.value + 'px';
+  radiusVal.textContent = r;
+  document.documentElement.style.setProperty('--radius', r);
+  saveTemp('radius', radius.value);
+});
+
+// ── Background ───────────────────────────────────────────────────────
+bgUrl.addEventListener('change', () => {
+  document.body.style.backgroundImage = bgUrl.value
+    ? `url(${bgUrl.value})` : 'none';
+  saveTemp('bgUrl', bgUrl.value);
+});
+bgFit.addEventListener('change', () => {
+  document.body.style.backgroundSize = bgFit.value;
+  saveTemp('bgFit', bgFit.value);
+});
+
+// ── Presets ───────────────────────────────────────────────────────────
+saveBtn.addEventListener('click', () => {
+  const name = presetName.value.trim();
+  if (!name) return alert('Enter a preset name.');
   const all = JSON.parse(localStorage.getItem('spotifyPresets')||'{}');
-  opts.presetList.innerHTML = '<option value="">-- Load Preset --</option>';
-  Object.keys(all).forEach(n=>{
-    const o=document.createElement('option');
-    o.value=o.textContent=n; opts.presetList.appendChild(o);
-  });
-}
-
-// CONTROL EVENTS
-[
-  ['barColor','value'],['bgUrl','value'],['bgMode','value'],
-  ['showCover','checked'],['showDetails','checked'],['showProgress','checked'],
-  ['titleColor','value'],['albumColor','value'],['artistColor','value']
-].forEach(([k,p])=>{
-  opts[k].addEventListener('input',()=>{
-    saveTemp(k, opts[k][p]);
-    applyStored();
-  });
+  all[name] = gatherSettings();
+  localStorage.setItem('spotifyPresets', JSON.stringify(all));
+  loadPresets();
+  presetName.value = '';
 });
-[['titleSize','titleVal'],['albumSize','albumVal'],['artistSize','artistVal']].forEach(([k,v])=>{
-  opts[k].addEventListener('input',()=>{
-    opts[v].textContent = opts[k].value+'px';
-    saveTemp(k,opts[k].value);
-    applyStored();
-  });
-});
-
-// PRESETS
-opts.saveBtn.addEventListener('click',()=>{
-  const name = opts.presetName.value.trim();
-  if(!name) return alert('Enter a preset name.');
+listPresets.addEventListener('change', () => {
+  const key = listPresets.value;
+  if (!key) return;
   const all = JSON.parse(localStorage.getItem('spotifyPresets')||'{}');
-  all[name]=gather();
-  localStorage.setItem('spotifyPresets',JSON.stringify(all));
-  loadPresets(); opts.presetName.value='';
+  applySettings(all[key]);
 });
-opts.presetList.addEventListener('change',()=>{
-  const key=opts.presetList.value;
-  if(!key) return;
-  const all=JSON.parse(localStorage.getItem('spotifyPresets')||'{}');
-  apply(all[key]); saveTemp('...','');
-});
-opts.deleteBtn.addEventListener('click',()=>{
-  const key=opts.presetList.value;
-  if(!key) return alert('Select one.');
-  const all=JSON.parse(localStorage.getItem('spotifyPresets')||'{}');
+delBtn.addEventListener('click', () => {
+  const key = listPresets.value;
+  if (!key) return alert('Select a preset to delete.');
+  const all = JSON.parse(localStorage.getItem('spotifyPresets')||'{}');
   delete all[key];
-  localStorage.setItem('spotifyPresets',JSON.stringify(all));
+  localStorage.setItem('spotifyPresets', JSON.stringify(all));
   loadPresets();
 });
-opts.resetBtn.addEventListener('click',()=>{
+resetBtn.addEventListener('click', () => {
   localStorage.removeItem('spotifyTemp');
   localStorage.removeItem('spotifyPresets');
   location.reload();
 });
 
-// SPOTIFY LOGIC
-async function fetchPlay(token){
+// ── Persistent Storage Helpers ───────────────────────────────────────
+function saveTemp(k,v){
+  const t=JSON.parse(localStorage.getItem('spotifyTemp')||'{}');
+  t[k]=v; localStorage.setItem('spotifyTemp',JSON.stringify(t));
+}
+function applyStoredSettings(){
+  const t=JSON.parse(localStorage.getItem('spotifyTemp')||'{}');
+  if(t) applySettings(t);
+}
+function loadPresets(){
+  const all=JSON.parse(localStorage.getItem('spotifyPresets')||'{}');
+  listPresets.innerHTML = '<option value="">-- Load Preset --</option>';
+  Object.keys(all).forEach(n=>{
+    const o=document.createElement('option');
+    o.value=n; o.textContent=n;
+    listPresets.appendChild(o);
+  });
+}
+function gatherSettings(){
+  return {
+    barColor: barColor.value,
+    titleColor: titleColor.value,
+    albumColor: albumColor.value,
+    artistColor: artistColor.value,
+    titleSize: titleSize.value,
+    albumSize: albumSize.value,
+    artistSize: artistSize.value,
+    radius: radius.value,
+    bgUrl: bgUrl.value,
+    bgFit: bgFit.value,
+    '#cover-art': toggles[0].checked,
+    '#details': toggles[1].checked,
+    '#progress-container': toggles[2].checked
+  };
+}
+function applySettings(cfg){
+  if(cfg.barColor){ barColor.value=cfg.barColor; document.documentElement.style.setProperty('--barColor',cfg.barColor); }
+  if(cfg.titleColor){ titleColor.value=cfg.titleColor; titleElem.style.color=cfg.titleColor; }
+  if(cfg.albumColor){ albumColor.value=cfg.albumColor; albumElem.style.color=cfg.albumColor; }
+  if(cfg.artistColor){ artistColor.value=cfg.artistColor; artistElem.style.color=cfg.artistColor; }
+  if(cfg.titleSize){ titleSize.value=cfg.titleSize; titleElem.style.fontSize=cfg.titleSize+'px'; titleVal.textContent=cfg.titleSize+'px'; }
+  if(cfg.albumSize){ albumSize.value=cfg.albumSize; albumElem.style.fontSize=cfg.albumSize+'px'; albumVal.textContent=cfg.albumSize+'px'; }
+  if(cfg.artistSize){ artistSize.value=cfg.artistSize; artistElem.style.fontSize=cfg.artistSize+'px'; artistVal.textContent=cfg.artistSize+'px'; }
+  if(cfg.radius){ radius.value=cfg.radius; document.documentElement.style.setProperty('--radius',cfg.radius+'px'); radiusVal.textContent=cfg.radius+'px'; }
+  if(cfg.bgUrl!==undefined){ bgUrl.value=cfg.bgUrl; document.body.style.backgroundImage=cfg.bgUrl?`url(${cfg.bgUrl})`:'none'; }
+  if(cfg.bgFit){ bgFit.value=cfg.bgFit; document.body.style.backgroundSize=cfg.bgFit; }
+  toggles.forEach(chk=>{
+    if(cfg[chk.dataset.target]!==undefined){
+      chk.checked=cfg[chk.dataset.target];
+      document.querySelector(chk.dataset.target).style.display=chk.checked?'':'none';
+    }
+  });
+}
+
+// ── Spotify Logic (unchanged) ────────────────────────────────────────
+async function fetchCurrentlyPlaying(token){
   try {
     const res = await fetch('https://api.spotify.com/v1/me/player/currently-playing',{
-      headers:{Authorization:`Bearer ${token}`}
+      headers:{ Authorization:`Bearer ${token}` }
     });
-    if(!res.ok) throw '';
-    const d=await res.json();
-    if(d.currently_playing_type==='ad') return;
-    const it=d.item, p=d.progress_ms, dur=it.duration_ms;
-    coverArt.src=it.album.images[0].url;
-    titleElem.textContent=it.name;
-    albumElem.textContent=it.album.name;
-    artistElem.textContent=it.artists.map(a=>a.name).join(', ');
-    progBar.style.width=`${(p/dur)*100}%`;
-    timeElapsed.textContent=formatTime(p);
-    timeRemaining.textContent='-'+formatTime(dur-p);
-    // clicking cover opens spotify
-    coverArt.onclick=()=>window.open(it.external_urls.spotify,'_blank');
+    if(!res.ok) throw new Error('Fetch failed');
+    const data = await res.json();
+    if(data.currently_playing_type==='ad') return;
+    const item = data.item, prog=data.progress_ms, dur=item.duration_ms;
+    coverArt.src = item.album.images[0].url;
+    titleElem.textContent = item.name;
+    albumElem.textContent = item.album.name;
+    artistElem.textContent = item.artists.map(a=>a.name).join(', ');
+    progressBar.style.width = `${(prog/dur)*100}%`;
   } catch(e){ console.error(e); }
 }
 function startRefreshing(){
-  if(token) setInterval(()=>fetchPlay(token),100);
+  setInterval(()=> fetchCurrentlyPlaying(accessToken),100);
 }
-function setupSpotify(){
-  if(!token && window.location.hash){
+function setupSpotifyAuth(){
+  if(!accessToken && window.location.hash){
     const h=window.location.hash.substring(1).split('&').reduce((a,c)=>{
       const [k,v]=c.split('='); a[k]=v; return a;
     },{});
-    token=h.access_token;
-    if(token){
-      document.cookie=`access_token=${token}; path=/;`;
+    accessToken=h.access_token;
+    if(accessToken){
+      document.cookie=`access_token=${accessToken}; path=/;`;
       loginContainer.style.display='none';
       mediaDisplay.hidden=false;
       startRefreshing();
     }
-  } else if(token){
+  } else if(accessToken){
     loginContainer.style.display='none';
     mediaDisplay.hidden=false;
   } else {
     loginContainer.style.display='block';
-    loginBtn.onclick=()=>window.location.href=
-      `https://accounts.spotify.com/authorize?response_type=token`
-      +`&client_id=${clientId}`
-      +`&scope=${scopes.join('%20')}`
-      +`&redirect_uri=${encodeURIComponent(redirectUri)}`;
+    loginBtn.addEventListener('click',()=>{
+      window.location.href=
+        `https://accounts.spotify.com/authorize?response_type=token`+
+        `&client_id=${clientId}`+
+        `&scope=${scopes.join('%20')}`+
+        `&redirect_uri=${encodeURIComponent(redirectUri)}`;
+    });
   }
 }
 function formatTime(ms){
@@ -226,6 +265,15 @@ function formatTime(ms){
         s=Math.floor((ms%60000)/1000).toString().padStart(2,'0');
   return `${m}:${s}`;
 }
-function getCookie(n){
-  const v=`; ${document.cookie}`,p=v.split(`; ${n}=`); return p.length===2?p.pop().split(';').shift():null;
+function getCookie(name){
+  const v=`; ${document.cookie}`, p=v.split(`; ${name}=`);
+  return p.length===2?p.pop().split(';').shift():null;
 }
+
+// Open Spotify when cover is clicked
+coverArt.addEventListener('click',()=>{
+  window.open(
+    `https://open.spotify.com/search/${encodeURIComponent(titleElem.textContent)}`,
+    '_blank'
+  );
+});
