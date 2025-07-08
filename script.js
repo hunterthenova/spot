@@ -1,235 +1,264 @@
-// Refs
-const loginC = document.getElementById('login-container');
-const loginB = document.getElementById('login-btn');
-const media   = document.getElementById('media-display');
-const cover   = document.getElementById('cover-art');
-const titleE  = document.getElementById('title');
-const albumE  = document.getElementById('album');
-const artistE = document.getElementById('artist');
-const progBar = document.getElementById('progress-bar');
-const menuB   = document.getElementById('menu-btn');
-const side    = document.getElementById('sidebar');
-const fullB   = document.getElementById('fullscreen-btn');
+// Element refs
+const loginC      = document.getElementById('login-container');
+const loginBtn    = document.getElementById('login-btn');
+const media       = document.getElementById('media-display');
+const coverArt    = document.getElementById('cover-art');
+const titleElem   = document.getElementById('title');
+const albumElem   = document.getElementById('album');
+const artistElem  = document.getElementById('artist');
+const timeEl      = document.getElementById('time-elapsed');
+const timeRem     = document.getElementById('time-remaining');
+const progBar     = document.getElementById('progress-bar');
+const menuBtn     = document.getElementById('menu-btn');
+const sidebar     = document.getElementById('sidebar');
+const fullBtn     = document.getElementById('fullscreen-btn');
 
 // Controls
-const toggles    = [...document.querySelectorAll('.opt-toggle')];
-const barColor   = document.getElementById('opt-bar-color');
-const titleColor = document.getElementById('opt-title-color');
-const albumColor = document.getElementById('opt-album-color');
-const artistColor= document.getElementById('opt-artist-color');
-const titleSize  = document.getElementById('opt-title-size');
-const albumSize  = document.getElementById('opt-album-size');
-const artistSize = document.getElementById('opt-artist-size');
-const radius     = document.getElementById('opt-radius');
-const bgUrl      = document.getElementById('opt-bg-url');
-const bgFit      = document.getElementById('opt-bg-fit');
-const nameI      = document.getElementById('preset-name');
-const saveB      = document.getElementById('save-preset');
-const listP      = document.getElementById('preset-list');
-const delB       = document.getElementById('delete-preset');
-const resetB     = document.getElementById('reset-defaults');
-
-// Value spans
-const valMap = {
-  title: document.getElementById('opt-title-val'),
-  album: document.getElementById('opt-album-val'),
-  artist:document.getElementById('opt-artist-val'),
-  radius:document.getElementById('opt-radius-val')
-};
+const toggles     = [...document.querySelectorAll('.opt-toggle')];
+const barColor    = document.getElementById('opt-bar-color');
+const titleColor  = document.getElementById('opt-title-color');
+const albumColor  = document.getElementById('opt-album-color');
+const artistColor = document.getElementById('opt-artist-color');
+const titleSize   = document.getElementById('opt-title-size');
+const albumSize   = document.getElementById('opt-album-size');
+const artistSize  = document.getElementById('opt-artist-size');
+const radius      = document.getElementById('opt-radius');
+const bgUrl       = document.getElementById('opt-bg-url');
+const bgColor     = document.getElementById('opt-bg-color');
+const syncColor   = document.getElementById('opt-sync-color');
+const bgFit       = document.getElementById('opt-bg-fit');
+const titleNum    = document.getElementById('opt-title-num');
+const albumNum    = document.getElementById('opt-album-num');
+const artistNum   = document.getElementById('opt-artist-num');
+const radiusNum   = document.getElementById('opt-radius-num');
+const presetName  = document.getElementById('preset-name');
+const saveBtn     = document.getElementById('save-preset');
+const presetList  = document.getElementById('preset-list');
+const delBtn      = document.getElementById('delete-preset');
+const resetBtn    = document.getElementById('reset-defaults');
 
 // Spotify creds
-const CLIENT_ID = '2658d08b17ae44bda4d79ee2c1fa905d';
-const REDIRECT  = 'https://spotify.huntersdesigns.com/';
-const SCOPES    = ['user-read-currently-playing','user-read-playback-state'];
-let token       = getCookie('access_token');
+const CLIENT_ID   = '2658d08b17ae44bda4d79ee2c1fa905d';
+const REDIRECT    = 'https://spotify.huntersdesigns.com/';
+const SCOPES      = ['user-read-currently-playing','user-read-playback-state'];
+let accessToken   = getCookie('access_token');
 
 // Init
-setupUI();
-setupSpotify();
+initUI();
+setupAuth();
 
-// ──────────────────────────────────────────
-function setupUI(){
+function initUI() {
   // Sidebar toggle
-  menuB.onclick = ()=> side.classList.toggle('open');
+  menuBtn.onclick = ()=> sidebar.classList.toggle('open');
   document.addEventListener('click', e=>{
-    if(!side.contains(e.target)&&!menuB.contains(e.target)) side.classList.remove('open');
+    if(!sidebar.contains(e.target)&&!menuBtn.contains(e.target))
+      sidebar.classList.remove('open');
   });
 
   // Fullscreen
-  fullB.onclick = ()=> {
+  fullBtn.onclick = ()=> {
     if(!document.fullscreenElement) document.documentElement.requestFullscreen();
     else document.exitFullscreen();
   };
   document.addEventListener('fullscreenchange', ()=>{
-    if(document.fullscreenElement) side.classList.remove('open');
+    if(document.fullscreenElement) sidebar.classList.remove('open');
   });
 
   // Toggles
-  toggles.forEach(chk=>{
-    chk.onchange = ()=>{
-      document.querySelector(chk.dataset.target).style.display = chk.checked?'':'none';
-      saveTemp(chk.dataset.target, chk.checked);
-    };
+  toggles.forEach(chk => chk.onchange = ()=> {
+    document.querySelector(chk.dataset.target).style.display = chk.checked?'':'none';
+    saveTemp(chk.dataset.target, chk.checked);
   });
 
-  // Colors
+  // Color inputs
   barColor.oninput   = ()=> updateCSS('--barColor', barColor.value, 'barColor');
-  titleColor.oninput = ()=> { titleE.style.color = titleColor.value; saveTemp('titleColor', titleColor.value); };
-  albumColor.oninput = ()=> { albumE.style.color = albumColor.value; saveTemp('albumColor', albumColor.value); };
-  artistColor.oninput= ()=> { artistE.style.color = artistColor.value; saveTemp('artistColor', artistColor.value); };
+  titleColor.oninput = ()=> (titleElem.style.color=titleColor.value, saveTemp('titleColor', titleColor.value));
+  albumColor.oninput = ()=> (albumElem.style.color=albumColor.value, saveTemp('albumColor', albumColor.value));
+  artistColor.oninput= ()=> (artistElem.style.color=artistColor.value, saveTemp('artistColor', artistColor.value));
+  bgColor.oninput    = ()=> {
+    document.body.style.backgroundColor = bgColor.value;
+    saveTemp('bgColor', bgColor.value);
+  };
 
-  // Sizes & radius
-  [[titleSize,'title',titleE],
-   [albumSize,'album',albumE],
-   [artistSize,'artist',artistE]]
-  .forEach(([sl,key,el])=>{
-    sl.oninput = ()=>{
-      const px = sl.value+'px';
-      el.style.fontSize = px;
-      valMap[key].textContent = px;
-      saveTemp(key+'Size', sl.value);
+  // Size & number sync
+  [[titleSize,titleNum,titleElem,'titleSize'],
+   [albumSize,albumNum,albumElem,'albumSize'],
+   [artistSize,artistNum,artistElem,'artistSize'],
+   [radius,radiusNum,null,'radius']]
+  .forEach(([slider,input,elem,key])=>{
+    const sync = val => {
+      if(elem) elem.style.fontSize = val+'px';
+      slider.value = input.value = val;
+      if(key==='radius') document.documentElement.style.setProperty('--radius', val+'px');
+      if(key!=='radius') saveTemp(key, val);
+      if(key==='radius') saveTemp('radius', val);
     };
+    slider.oninput = ()=> sync(slider.value);
+    input.oninput  = ()=> sync(input.value);
   });
-  radius.oninput = ()=>{
-    const r = radius.value+'px';
-    updateCSS('--radius', r, 'radius');
-    valMap.radius.textContent = r;
-  };
 
-  // Background
+  // Radius CSS var
+  if(localStorage.getItem('spotifyTemp')) {
+    const tmp = JSON.parse(localStorage.getItem('spotifyTemp'));
+    if(tmp.radius) document.documentElement.style.setProperty('--radius', tmp.radius+'px');
+  }
+
+  // Background image/color
   bgUrl.onchange = ()=> {
-    document.body.style.backgroundImage = bgUrl.value?`url(${bgUrl.value})`:'none';
-    saveTemp('bgUrl', bgUrl.value);
+    if(bgUrl.value) {
+      document.body.style.backgroundImage = `url(${bgUrl.value})`;
+      saveTemp('bgUrl', bgUrl.value);
+    } else {
+      document.body.style.backgroundImage = '';
+      saveTemp('bgUrl','');
+    }
   };
-  bgFit.onchange = ()=> {
-    document.body.style.backgroundSize = bgFit.value;
-    saveTemp('bgFit', bgFit.value);
+  bgFit.onchange = ()=> (document.body.style.backgroundSize=bgFit.value, saveTemp('bgFit', bgFit.value));
+
+  // Sync color from cover corner
+  syncColor.onchange = ()=> {
+    if(syncColor.checked && coverArt.src) sampleCoverColor();
   };
+  coverArt.onload = ()=> { if(syncColor.checked) sampleCoverColor(); };
 
   // Presets
-  saveB.onclick = ()=>{
-    const n = nameI.value.trim();
-    if(!n) return alert('Name it');
-    const all = JSON.parse(localStorage.getItem('spotifyPresets')||'{}');
-    all[n] = gather(); localStorage.setItem('spotifyPresets', JSON.stringify(all));
-    loadList(); nameI.value='';
+  saveBtn.onclick = ()=> {
+    const n = presetName.value.trim(); if(!n) return alert('Name your preset');
+    const all=JSON.parse(localStorage.getItem('spotifyPresets')||'{}');
+    all[n] = gatherSettings(); localStorage.setItem('spotifyPresets', JSON.stringify(all));
+    loadPresets(); presetName.value='';
   };
-  listP.onchange = ()=> apply(JSON.parse(localStorage.getItem('spotifyPresets')||'{}')[listP.value]||{});
-  delB.onclick = ()=>{
-    const all = JSON.parse(localStorage.getItem('spotifyPresets')||'{}');
-    delete all[listP.value];
+  presetList.onchange = ()=> applySettings(JSON.parse(localStorage.getItem('spotifyPresets')||'{}')[presetList.value]||{});
+  delBtn.onclick = ()=> {
+    if(presetList.value==='Default') return;
+    const all=JSON.parse(localStorage.getItem('spotifyPresets')||'{}'); delete all[presetList.value];
+    localStorage.setItem('spotifyPresets', JSON.stringify(all)); loadPresets();
+  };
+  resetBtn.onclick = ()=> {
+    if(confirm('Are you sure you want to reset all settings?')) {
+      localStorage.clear(); location.reload();
+    }
+  };
+
+  // Load defaults & presets
+  applySettings(JSON.parse(localStorage.getItem('spotifyTemp')||'{}'));
+  loadPresets();
+  // Add default preset if missing
+  const all=JSON.parse(localStorage.getItem('spotifyPresets')||'{}');
+  if(!all.Default) {
+    all.Default = gatherSettings();
     localStorage.setItem('spotifyPresets', JSON.stringify(all));
-    loadList();
+    loadPresets();
+  }
+}
+
+function updateCSS(prop, val, key) {
+  document.documentElement.style.setProperty(prop, val);
+  saveTemp(key, val);
+}
+
+function saveTemp(k, v) {
+  const tmp = JSON.parse(localStorage.getItem('spotifyTemp')||'{}');
+  tmp[k] = v; localStorage.setItem('spotifyTemp', JSON.stringify(tmp));
+}
+
+function gatherSettings() {
+  return {
+    barColor: barColor.value,
+    titleColor: titleColor.value,
+    albumColor: albumColor.value,
+    artistColor: artistColor.value,
+    titleSize: titleSize.value,
+    albumSize: albumSize.value,
+    artistSize: artistSize.value,
+    radius: radius.value,
+    bgUrl: bgUrl.value,
+    bgFit: bgFit.value,
+    bgColor: bgColor.value,
+    syncColor: syncColor.checked,
+    '#cover-art': toggles[0].checked,
+    '#details': toggles[1].checked,
+    '#progress-container': toggles[2].checked
   };
-  resetB.onclick = ()=> localStorage.clear()||location.reload();
-
-  // Apply stored & presets
-  apply(JSON.parse(localStorage.getItem('spotifyTemp')||'{}'));
-  loadList();
 }
 
-// ──────────────────────────────────────────
-function updateCSS(prop,val,key){
-  document.documentElement.style.setProperty(prop,val);
-  saveTemp(key,val);
-}
-function saveTemp(k,v){
-  const t = JSON.parse(localStorage.getItem('spotifyTemp')||'{}');
-  t[k]=v; localStorage.setItem('spotifyTemp', JSON.stringify(t));
-}
-function gather(){
-  const o = {};
-  o.barColor = barColor.value;
-  o.titleColor = titleColor.value;
-  o.albumColor = albumColor.value;
-  o.artistColor= artistColor.value;
-  o.titleSize = titleSize.value;
-  o.albumSize = albumSize.value;
-  o.artistSize= artistSize.value;
-  o.radius    = radius.value+'px';
-  o.bgUrl     = bgUrl.value;
-  o.bgFit     = bgFit.value;
-  toggles.forEach(chk=> o[chk.dataset.target] = chk.checked);
-  return o;
-}
-function apply(cfg){
-  if(cfg.barColor) updateCSS('--barColor',cfg.barColor,'barColor');
-  if(cfg.radius)   updateCSS('--radius',cfg.radius,'radius');
-  if(cfg.titleColor) { titleColor.value=cfg.titleColor; titleE.style.color=cfg.titleColor; }
-  if(cfg.albumColor) { albumColor.value=cfg.albumColor; albumE.style.color=cfg.albumColor; }
-  if(cfg.artistColor){ artistColor.value=cfg.artistColor; artistE.style.color=cfg.artistColor; }
-  if(cfg.titleSize) { titleSize.value=cfg.titleSize; titleE.style.fontSize=cfg.titleSize+'px'; valMap.title.textContent=cfg.titleSize+'px'; }
-  if(cfg.albumSize) { albumSize.value=cfg.albumSize; albumE.style.fontSize=cfg.albumSize+'px'; valMap.album.textContent=cfg.albumSize+'px'; }
-  if(cfg.artistSize){ artistSize.value=cfg.artistSize; artistE.style.fontSize=cfg.artistSize+'px'; valMap.artist.textContent=cfg.artistSize+'px'; }
-  if(cfg.bgUrl!==undefined){ bgUrl.value=cfg.bgUrl; document.body.style.backgroundImage=cfg.bgUrl?`url(${cfg.bgUrl})`:'none'; }
-  if(cfg.bgFit) { bgFit.value=cfg.bgFit; document.body.style.backgroundSize=cfg.bgFit; }
+function applySettings(cfg) {
+  if(cfg.barColor) updateCSS('--barColor', cfg.barColor, 'barColor');
+  if(cfg.titleColor) titleElem.style.color=cfg.titleColor;
+  if(cfg.albumColor) albumElem.style.color=cfg.albumColor;
+  if(cfg.artistColor) artistElem.style.color=cfg.artistColor;
+  if(cfg.titleSize) titleSize.value=cfg.titleNum.value=cfg.titleSize, titleElem.style.fontSize=cfg.titleSize+'px';
+  if(cfg.albumSize) albumSize.value=albumNum.value=cfg.albumSize, albumElem.style.fontSize=cfg.albumSize+'px';
+  if(cfg.artistSize) artistSize.value=artistNum.value=cfg.artistSize, artistElem.style.fontSize=cfg.artistSize+'px';
+  if(cfg.radius) radius.value=radiusNum.value=cfg.radius, document.documentElement.style.setProperty('--radius', cfg.radius+'px');
+  if(cfg.bgUrl!==undefined) document.body.style.backgroundImage=cfg.bgUrl?`url(${cfg.bgUrl})`:'';
+  if(cfg.bgFit) document.body.style.backgroundSize=cfg.bgFit;
+  if(cfg.bgColor) document.body.style.backgroundColor=cfg.bgColor;
+  if(cfg.syncColor!==undefined) syncColor.checked=cfg.syncColor;
   toggles.forEach(chk=>{
-    if(cfg[chk.dataset.target]!==undefined){
-      chk.checked = cfg[chk.dataset.target];
-      document.querySelector(chk.dataset.target).style.display = chk.checked?'':'none';
+    if(cfg[chk.dataset.target]!==undefined) {
+      chk.checked=cfg[chk.dataset.target];
+      document.querySelector(chk.dataset.target).style.display=cfg[chk.dataset.target]?'': 'none';
     }
   });
 }
-function loadList(){
-  const all = JSON.parse(localStorage.getItem('spotifyPresets')||'{}');
-  listP.innerHTML='<option>-- Load --</option>';
+
+function loadPresets() {
+  const all=JSON.parse(localStorage.getItem('spotifyPresets')||'{}');
+  presetList.innerHTML = '';
   Object.keys(all).forEach(n=>{
-    const o = document.createElement('option');
-    o.value=o.textContent=n;
-    listP.append(o);
+    const o=document.createElement('option');o.value=o.textContent=n; presetList.appendChild(o);
   });
 }
 
-// ──────────────────────────────────────────
-function setupSpotify(){
-  // Auth
-  if(!token && location.hash){
-    const h = Object.fromEntries(location.hash.slice(1).split('&').map(p=>p.split('=')));
-    token = h.access_token;
-    document.cookie = `access_token=${token}; path=/;`;
-    history.replaceState({},'',location.pathname);
+// Color sampling
+function sampleCoverColor() {
+  const img=new Image(); img.crossOrigin='Anonymous'; img.src=coverArt.src;
+  img.onload = ()=>{
+    const c=document.createElement('canvas'); c.width=img.width; c.height=img.height;
+    const ctx=c.getContext('2d'); ctx.drawImage(img,0,0);
+    const data=ctx.getImageData(img.width-1,0,1,1).data;
+    const hex = `#${data[0].toString(16).padStart(2,'0')}${data[1].toString(16).padStart(2,'0')}${data[2].toString(16).padStart(2,'0')}`;
+    bgColor.value=hex; document.body.style.backgroundColor=hex; saveTemp('bgColor',hex);
+  };
+}
+
+// Spotify auth & fetch
+function setupAuth() {
+  if(!accessToken && location.hash) {
+    const h=Object.fromEntries(location.hash.slice(1).split('&').map(p=>p.split('=')));
+    accessToken=h.access_token; history.replaceState({},'',location.pathname);
   }
-  if(token){
-    loginC.hidden=true;
-    media.hidden=false;
-    start();
+  if(accessToken) {
+    loginC.hidden=true; media.hidden=false; startFetching();
   } else {
-    loginC.hidden=false;
-    media.hidden=true;
-    loginB.onclick = ()=>{
-      location.href = `https://accounts.spotify.com/authorize?response_type=token`
-        +`&client_id=${CLIENT_ID}`
-        +`&scope=${SCOPES.join('%20')}`
-        +`&redirect_uri=${encodeURIComponent(REDIRECT)}`;
-    };
+    loginC.hidden=false; media.hidden=true;
+    loginBtn.onclick=()=> location.href =
+      `https://accounts.spotify.com/authorize?response_type=token&client_id=${CLIENT_ID}`+
+      `&scope=${SCOPES.join('%20')}&redirect_uri=${encodeURIComponent(REDIRECT)}`;
   }
 }
 
-// ──────────────────────────────────────────
-function start(){
-  fetchNow();
-  setInterval(fetchNow,100);
+function startFetching() {
+  fetchNow(); setInterval(fetchNow,100);
 }
-async function fetchNow(){
+
+async function fetchNow() {
   try {
-    const r = await fetch('https://api.spotify.com/v1/me/player/currently-playing',{
-      headers:{Authorization:`Bearer ${token}`}
-    });
-    if(!r.ok) throw 0;
-    const d = await r.json();
-    if(d.currently_playing_type==='ad') return;
-    const itm = d.item, prog=d.progress_ms, dur=itm.duration_ms;
-    cover.src = itm.album.images[0].url;
-    titleE.textContent  = itm.name;
-    albumE.textContent  = itm.album.name;
-    artistE.textContent = itm.artists.map(a=>a.name).join(', ');
-    progBar.style.width = `${(prog/dur)*100}%`;
-    cover.onclick = ()=> window.open(itm.external_urls.spotify,'_blank');
+    const res=await fetch('https://api.spotify.com/v1/me/player/currently-playing',{headers:{Authorization:`Bearer ${accessToken}`}});
+    if(!res.ok) return;
+    const d=await res.json(); if(d.currently_playing_type==='ad') return;
+    const item=d.item, prog=d.progress_ms, dur=item.duration_ms;
+    coverArt.src=item.album.images[0].url;
+    titleElem.textContent=item.name;
+    albumElem.textContent=item.album.name;
+    artistElem.textContent=item.artists.map(a=>a.name).join(', ');
+    const fmt = ms=>`${Math.floor(ms/60000)}:${String(Math.floor((ms%60000)/1000)).padStart(2,'0')}`;
+    timeEl.textContent=fmt(prog);
+    timeRem.textContent=`-${fmt(dur-prog)}`;
+    progBar.style.width=`${(prog/dur)*100}%`;
+    coverArt.onclick=()=>window.open(item.external_urls.spotify,'_blank');
   } catch{}
 }
 
-// ──────────────────────────────────────────
-function getCookie(n){
-  const c=document.cookie.split('; ').find(r=>r.startsWith(n+'='));
-  return c?c.split('=')[1]:null;
-}
+function getCookie(n){return document.cookie.split('; ').find(r=>r.startsWith(n+'='))?.split('=')[1]||null;}
