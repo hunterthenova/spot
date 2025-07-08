@@ -1,114 +1,97 @@
 :root {
   --main-bg: #121212;
-  --prog-bg: #0e0e0e;
+  --prog-bg: #0b0b0b;
   --barColor: #1db954;
   --progText: #1db954;
-  --radius: 5px;
+  --radius: 999px;
 }
 
-/* LOGIN */
-#login-container {
-  position:fixed;
-  top:50%; left:50%; transform:translate(-50%,-50%);
-  z-index:1000;
-}
-#login-btn {
-  padding:12px 24px;
-  font-size:18px;
-  background:#1db954;
-  border:none;
-  color:#fff;
-  border-radius:6px;
-  cursor:pointer;
-}
-#login-btn:hover { background:#14833b; }
-
-/* PAGE */
 body {
-  margin:0; padding:0; overflow:hidden;
-  background:var(--main-bg);
-  color:#fff;
+  margin: 0;
+  padding: 0;
+  background: var(--main-bg);
+  color: #fff;
   font-family: Arial, sans-serif;
-  transition:background 0.3s, background-image 0.3s;
-  background-size:cover;
-  background-position:center;
+  overflow: hidden;
+  transition: background 0.3s ease;
 }
 
-/* NOW PLAYING */
+#login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+#login-btn {
+  padding: 12px 24px;
+  font-size: 18px;
+  background: var(--barColor);
+  border: none;
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+#login-btn:hover {
+  opacity: 0.9;
+}
+
 #media-display {
-  display:flex; flex-direction:column;
-  align-items:center; justify-content:center;
-  height:100vh;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
 }
-#cover-art {
-  max-width:50%; max-height:50%;
-  border-radius:10px; margin-bottom:20px;
-  cursor:pointer;
+#media-display.active {
+  display: flex;
 }
-#details { text-align:center; margin-bottom:20px; }
-#title { font-size:40px; font-weight:bold; color:var(--titleColor, #fff); }
-#album { font-size:30px; color:var(--albumColor, #fff); }
-#artist { font-size:20px; color:var(--artistColor, #bbb); }
+
+#buttons {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 8px;
+}
+.menu-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+.menu-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
 
 #progress-container {
-  display:flex; align-items:center;
-  width:80%; margin:10px auto;
-}
-#progress-container span {
-  font-size:14px; color:var(--progText);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  width: 80%;
 }
 #progress-bar-container {
-  flex:1; height:10px;
-  background:var(--prog-bg);
-  border-radius:var(--radius);
-  overflow:hidden;
-  margin:0 10px;
-  position:relative;
+  flex: 1;
+  height: 10px;
+  background: var(--prog-bg);
+  border-radius: var(--radius);
+  overflow: hidden;
+  position: relative;
 }
 #progress-bar {
-  width:0; height:100%;
-  background:var(--barColor);
-  border-radius:var(--radius);
-  transition:width 0.5s;
+  width: 0%;
+  height: 100%;
+  background: var(--barColor);
+  border-radius: var(--radius);
+  transition: width 0.3s ease;
 }
 
-/* MENU & SIDEBAR */
-#buttons {
-  position:fixed; top:10px; right:10px; z-index:1000;
-  display:flex; flex-direction:column;
+#progress-container span {
+  color: var(--progText);
+  font-size: 12px;
 }
-#buttons button {
-  background:transparent;
-  border:none;
-  color:#fff;
-  font-size:24px;
-  margin-bottom:8px;
-  opacity:0.6;
-  cursor:pointer;
-  transition:opacity .3s;
-}
-#buttons button:hover { opacity:1; }
-
-#sidebar {
-  position:fixed; top:0; right:-360px;
-  width:340px; height:100%; padding:20px;
-  background:rgba(20,20,20,0.95);
-  box-shadow:-4px 0 8px rgba(0,0,0,0.5);
-  transition:right .3s; z-index:999; overflow:auto;
-}
-#sidebar.open { right:0; }
-#sidebar h2 { color:#1db954; margin-top:0; }
-.option-group { margin-bottom:20px; }
-.option-group h3 { color:#1db954; margin-bottom:8px; }
-#sidebar label {
-  display:flex; justify-content:space-between;
-  align-items:center;
-  margin:6px 0;
-  font-size:14px;
-}
-#sidebar input, #sidebar select, #sidebar button { margin-left:8px; }
-#sidebar button { padding:6px 12px; }
-
-/* Hide on Fullscreen */
-:fullscreen #buttons,
-:fullscreen #sidebar { visibility:hidden; }
