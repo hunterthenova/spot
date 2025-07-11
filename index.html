@@ -1,4 +1,3 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,51 +29,82 @@
     </div>
   </div>
 
-  <!-- Buttons -->
+  <!-- Controls -->
   <div id="buttons">
-    <button id="menu-btn" class="menu-btn">☰ Customize</button>
-    <button id="fullscreen-btn" class="menu-btn">⛶ Fullscreen</button>
+    <button id="menu-btn">☰ Customize</button>
+    <button id="fullscreen-btn">⛶ Fullscreen</button>
   </div>
 
   <!-- Sidebar -->
   <aside id="sidebar">
     <h2>Customize</h2>
 
-    <div class="section">
-      <label>Background Color:</label>
-      <input type="color" id="bg-color" value="#121212" />
+    <section>
+      <label>Background Color:
+        <input type="color" id="bg-color" value="#121212" />
+      </label>
       <label><input type="checkbox" id="sync-bg" /> Sync BG from Cover</label>
       <label><input type="checkbox" id="smart-bg" /> Smart BG Mode</label>
-      <label>Background Fit:</label>
-      <select id="bg-fit">
-        <option value="cover">Fill</option>
-        <option value="contain">Fit</option>
-      </select>
-    </div>
+      <label>Background Fit:
+        <select id="bg-fit"><option>cover</option><option>contain</option></select>
+      </label>
+    </section>
 
-    <div class="section">
-      <label>Smart Mode Elements:</label>
-      <label><input type="checkbox" class="smart-toggle" data-type="bar" checked /> Bar Color</label>
-      <label><input type="checkbox" class="smart-toggle" data-type="text" checked /> Progress Text</label>
-      <label><input type="checkbox" class="smart-toggle" data-type="title" checked /> Title</label>
-      <label><input type="checkbox" class="smart-toggle" data-type="album" checked /> Album</label>
-      <label><input type="checkbox" class="smart-toggle" data-type="artist" checked /> Artist</label>
-    </div>
+    <section>
+      <label>Bar Color:
+        <input type="color" id="bar-color" value="#1db954" />
+      </label>
+      <label>Progress Text:
+        <input type="color" id="prog-text" value="#1db954" />
+      </label>
+      <label><input type="checkbox" id="sync-prog" /> Sync Text with Bar</label>
+    </section>
 
-    <div class="section">
+    <section>
+      <label>Title Color:
+        <input type="color" id="title-color" value="#ffffff" />
+      </label>
+      <label>Album Color:
+        <input type="color" id="album-color" value="#ffffff" />
+      </label>
+      <label>Artist Color:
+        <input type="color" id="artist-color" value="#bbbbbb" />
+      </label>
+    </section>
+
+    <section>
+      <div class="inline"><span>Title:</span>
+        <input type="range" id="title-size" min="20" max="80" value="40" />
+        <input type="number" id="title-num" min="20" max="80" value="40" />px
+      </div>
+      <div class="inline"><span>Album:</span>
+        <input type="range" id="album-size" min="16" max="60" value="30" />
+        <input type="number" id="album-num" min="16" max="60" value="30" />px
+      </div>
+      <div class="inline"><span>Artist:</span>
+        <input type="range" id="artist-size" min="12" max="40" value="20" />
+        <input type="number" id="artist-num" min="12" max="40" value="20" />px
+      </div>
+      <div class="inline"><span>Radius:</span>
+        <input type="range" id="radius" min="0" max="20" value="5" />
+        <input type="number" id="radius-num" min="0" max="20" value="5" />px
+      </div>
+    </section>
+
+    <section>
       <button id="smart-mode">Toggle Smart Mode</button>
-    </div>
+    </section>
 
-    <hr/>
+    <hr />
 
-    <div class="section">
+    <section>
       <h3>Presets</h3>
       <input type="text" id="preset-name" placeholder="Preset name" />
       <button id="save-preset">Save</button>
       <select id="preset-list"></select>
       <button id="delete-preset">Delete</button>
       <button id="reset-defaults">Reset</button>
-    </div>
+    </section>
   </aside>
 
   <script src="script.js"></script>
