@@ -1,4 +1,3 @@
-/* style.css */
 :root {
   --bg-color: #121212;
   --bar-color: #1db954;
@@ -23,7 +22,9 @@ body {
 
 #login-container {
   display: flex; justify-content: center; align-items: center;
-  height: 100vh; position: fixed; width: 100%; z-index: 10;
+  height: 100vh; width: 100%; position: fixed; top: 0;
+  background: var(--bg-color);
+  z-index: 10;
 }
 #login-btn {
   padding: 12px 24px; font-size: 18px;
@@ -43,18 +44,20 @@ body {
   position: fixed; top: 10px; right: 10px;
   display: flex; gap: 8px; z-index: 5;
 }
-.menu-btn {
+#menu-btn, #fullscreen-btn {
   background: rgba(255,255,255,0.1);
   border: none; color: #fff;
   padding: 6px 12px; border-radius: 4px;
   cursor: pointer; font-size: 14px;
 }
-.menu-btn:hover { background: rgba(255,255,255,0.2); }
+#menu-btn:hover, #fullscreen-btn:hover {
+  background: rgba(255,255,255,0.2);
+}
 
 #details { text-align: center; margin: 20px 0; }
-#title { font-size: var(--title-size); color: var(--title-color, #fff); }
-#album { font-size: var(--album-size); color: var(--album-color, #fff); }
-#artist { font-size: var(--artist-size); color: var(--artist-color, #bbb); }
+#title { font-size: var(--title-size); }
+#album { font-size: var(--album-size); }
+#artist { font-size: var(--artist-size); }
 
 #progress-container {
   display: flex; align-items: center;
@@ -94,4 +97,6 @@ body {
 .inline input[type="number"] { width: 50px; }
 
 :fullscreen #buttons,
-:fullscreen #sidebar { visibility: hidden; }
+:fullscreen #sidebar {
+  visibility: hidden;
+}
