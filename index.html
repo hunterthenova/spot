@@ -1,4 +1,3 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -43,70 +42,29 @@
     <div class="section">
       <label>Background Color:</label>
       <input type="color" id="bg-color" value="#121212" />
-    </div>
-    <div class="section">
+      <label><input type="checkbox" id="sync-bg" /> Sync BG from Cover</label>
+      <label><input type="checkbox" id="smart-bg" /> Smart BG Mode</label>
       <label>Background Fit:</label>
       <select id="bg-fit">
         <option value="cover">Fill</option>
         <option value="contain">Fit</option>
       </select>
     </div>
+
     <div class="section">
-      <label><input type="checkbox" id="sync-bg" /> Sync BG from Cover</label>
+      <label>Smart Mode Elements:</label>
+      <label><input type="checkbox" class="smart-toggle" data-type="bar" checked /> Bar Color</label>
+      <label><input type="checkbox" class="smart-toggle" data-type="text" checked /> Progress Text</label>
+      <label><input type="checkbox" class="smart-toggle" data-type="title" checked /> Title</label>
+      <label><input type="checkbox" class="smart-toggle" data-type="album" checked /> Album</label>
+      <label><input type="checkbox" class="smart-toggle" data-type="artist" checked /> Artist</label>
     </div>
 
     <div class="section">
-      <label>Bar Color:</label>
-      <input type="color" id="bar-color" value="#1db954" />
-    </div>
-    <div class="section">
-      <label>Progress Text Color:</label>
-      <input type="color" id="prog-text-color" value="#1db954" />
-      <label><input type="checkbox" id="sync-prog-text" /> Sync with Bar</label>
+      <button id="smart-mode">Toggle Smart Mode</button>
     </div>
 
-    <div class="section">
-      <label>Title Color:</label>
-      <input type="color" id="title-color" value="#ffffff" />
-    </div>
-    <div class="section">
-      <label>Album Color:</label>
-      <input type="color" id="album-color" value="#ffffff" />
-    </div>
-    <div class="section">
-      <label>Artist Color:</label>
-      <input type="color" id="artist-color" value="#bbbbbb" />
-    </div>
-
-    <div class="section">
-      <label>Font Sizes & Radius</label>
-      <div class="inline">
-        <span>Title:</span>
-        <input type="range" id="title-size" min="20" max="80" value="40" />
-        <input type="number" id="title-num" min="20" max="80" value="40" />px
-      </div>
-      <div class="inline">
-        <span>Album:</span>
-        <input type="range" id="album-size" min="16" max="60" value="30" />
-        <input type="number" id="album-num" min="16" max="60" value="30" />px
-      </div>
-      <div class="inline">
-        <span>Artist:</span>
-        <input type="range" id="artist-size" min="12" max="40" value="20" />
-        <input type="number" id="artist-num" min="12" max="40" value="20" />px
-      </div>
-      <div class="inline">
-        <span>Radius:</span>
-        <input type="range" id="radius" min="0" max="20" value="5" />
-        <input type="number" id="radius-num" min="0" max="20" value="5" />px
-      </div>
-    </div>
-
-    <div class="section">
-      <button id="smart-mode">Smart Mode</button>
-    </div>
-
-    <hr />
+    <hr/>
 
     <div class="section">
       <h3>Presets</h3>
