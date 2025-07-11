@@ -9,7 +9,16 @@
 <body>
   <!-- Login -->
   <div id="login-container">
-    <button id="login-btn">Login with Spotify</button>
+    <button
+      id="login-btn"
+      onclick="window.location.href =
+        'https://accounts.spotify.com/authorize' +
+        '?response_type=token' +
+        '&client_id=2658d08b17ae44bda4d79ee2c1fa905d' +
+        '&scope=' + encodeURIComponent('user-read-currently-playing user-read-playback-state') +
+        '&redirect_uri=' + encodeURIComponent('https://spotify.huntersdesigns.com/')">
+      Login with Spotify
+    </button>
   </div>
 
   <!-- Now Playing -->
