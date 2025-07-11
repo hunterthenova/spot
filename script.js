@@ -222,13 +222,13 @@ function setupAuth(){
     history.replaceState({},'',location.pathname);
   }
   if(token){
-    loginC.hidden=true;
-    mediaD.hidden=false;
+    loginC.hidden = true;
+    mediaD.hidden = false;
     startFetch();
   } else {
-    loginC.hidden=false;
-    mediaD.hidden=true;
-    loginB.onclick=()=> location.href=
+    loginC.hidden = false;
+    mediaD.hidden = true;
+    loginB.onclick = ()=> location.href=
       `https://accounts.spotify.com/authorize?response_type=token&client_id=${CLIENT_ID}`+
       `&scope=${SCOPES.join('%20')}&redirect_uri=${encodeURIComponent(REDIRECT)}`;
   }
@@ -256,8 +256,8 @@ async function fetchNow(){
     albumE.textContent  = i.album.name;
     artistE.textContent = i.artists.map(a=>a.name).join(', ');
     const fmt=ms=>`${Math.floor(ms/60000)}:${String(Math.floor((ms%60000)/1000)).padStart(2,'0')}`;
-    timeEl.textContent  = fmt(p);
-    timeRem.textContent = `-${fmt(du-p)}`;
+    timeEl.textContent = fmt(p);
+    timeRem.textContent= `-${fmt(du-p)}`;
     progBar.style.width = `${(p/du)*100}%`;
     cover.onclick = ()=> window.open(i.external_urls.spotify,'_blank');
   }catch{}
