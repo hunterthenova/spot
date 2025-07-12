@@ -17,103 +17,65 @@ body {
 
 /* LOGIN */
 #login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  width: 100%;
-  position: fixed;
-  background: var(--bg-color);
-  z-index: 9999;
-  pointer-events: auto;
+  display: flex; justify-content: center; align-items: center;
+  height: 100vh; width: 100%; position: fixed;
+  background: var(--bg-color); z-index: 9999; pointer-events: auto;
 }
 #login-btn {
-  position: relative;
-  z-index: 10000;
-  pointer-events: auto;
-  padding: 12px 24px;
-  font-size: 18px;
-  background: var(--bar-color);
-  border: none;
-  color: #fff;
-  border-radius: 6px;
-  cursor: pointer;
+  z-index: 10000; pointer-events: auto;
+  padding: 12px 24px; font-size: 18px;
+  background: var(--bar-color); border: none;
+  color: #fff; border-radius: 6px; cursor: pointer;
 }
 #login-btn:hover { opacity: 0.9; }
 
 /* NOW PLAYING */
-#media-display {
-  display: none; flex-direction: column;
-  align-items: center; justify-content: center;
-  height: 100vh;
-}
+#media-display { display: none; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
 #media-display.active { display: flex; }
 
-#details {
-  text-align: center;
-  margin: 20px 0;
-}
+#details { text-align: center; margin: 20px 0; }
 #title { font-size: 40px; color: var(--title-color, #fff); }
 #album { font-size: 30px; color: var(--album-color, #fff); }
 #artist { font-size: 20px; color: var(--artist-color, #bbb); }
 
 #progress-container {
-  display: flex; align-items: center;
-  width: 80%; margin: 10px auto;
+  display: flex; align-items: center; width: 80%; margin: 10px auto;
 }
 #time-elapsed, #time-remaining {
-  color: var(--prog-text);
-  font-size: 14px;
+  color: var(--prog-text); font-size: 14px;
   width: 40px; text-align: center;
 }
 #progress-bar-container {
-  flex: 1; height: 10px;
-  background: var(--prog-bg);
-  border-radius: var(--radius);
-  overflow: hidden;
-  margin: 0 5px;
+  flex: 1; height: 10px; background: var(--prog-bg);
+  border-radius: var(--radius); overflow: hidden; margin: 0 5px;
 }
 #progress-bar {
-  width: 0; height: 100%;
-  background: var(--bar-color);
-  border-radius: var(--radius);
-  transition: width 0.5s;
+  width: 0; height: 100%; background: var(--bar-color);
+  border-radius: var(--radius); transition: width 0.5s;
 }
 
 /* BUTTONS & SIDEBAR */
 #buttons {
-  position: fixed;
-  top: 10px; right: 10px;
-  display: flex; gap: 8px;
-  z-index: 5;
+  position: fixed; top: 10px; right: 10px; display: flex; gap: 8px; z-index: 5;
 }
 .menu-btn {
-  background: rgba(255,255,255,0.1);
-  border: none; color: #fff;
-  padding: 6px 12px; border-radius: 4px;
-  cursor: pointer; font-size: 14px;
+  background: rgba(255,255,255,0.1); border: none;
+  color: #fff; padding: 6px 12px; border-radius: 4px;
+  cursor: pointer; font-size: 14px; transition: background .2s;
 }
 .menu-btn:hover { background: rgba(255,255,255,0.2); }
 
 #sidebar {
-  position: fixed;
-  top: 0; right: -360px;
-  width: 340px; height: 100%;
-  padding: 20px;
+  position: fixed; top: 0; right: -360px;
+  width: 340px; height: 100%; padding: 20px;
   background: rgba(20,20,20,0.95);
   box-shadow: -4px 0 8px rgba(0,0,0,0.5);
-  transition: right 0.3s;
-  overflow-y: auto;
-  z-index: 5;
+  transition: right 0.3s; overflow-y: auto; z-index: 5;
 }
 #sidebar.open { right: 0; }
 #sidebar h2 { color: var(--bar-color); margin-top: 0; }
 .section { margin-bottom: 16px; }
 .inline { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-.inline span { width: 60px; }
 
 /* Hide in fullscreen */
-:fullscreen #buttons,
-:fullscreen #sidebar {
-  visibility: hidden;
-}
+:fullscreen #buttons, :fullscreen #sidebar { visibility: hidden; }
