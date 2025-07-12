@@ -40,7 +40,7 @@
 
   <!-- Buttons -->
   <div id="buttons">
-    <button id="menu-btn" class="menu-btn">☰ Customize</button>
+    <button id="menu-btn" class="menu-btn">⚙️ Customize</button>
     <button id="fullscreen-btn" class="menu-btn">⛶ Fullscreen</button>
   </div>
 
@@ -48,54 +48,68 @@
   <aside id="sidebar">
     <h2>Customize</h2>
 
-    <div class="section">
-      <label>BG Color:</label>
-      <input type="color" id="bg-color" value="#121212" />
-      <label><input type="checkbox" id="sync-bg" /> Sync BG</label>
-      <label><input type="checkbox" id="smart-bg" /> Smart‑Mode BG</label>
+    <div class="section"><strong>Show/Hide:</strong><br/>
+      <label><input type="checkbox" class="opt-toggle" data-target="#cover-art" checked> Cover</label>
+      <label><input type="checkbox" class="opt-toggle" data-target="#details" checked> Details</label>
+      <label><input type="checkbox" class="opt-toggle" data-target="#progress-container" checked> Progress</label>
+    </div>
+
+    <div class="section"><strong>Background:</strong><br/>
+      <label>Image URL: <input type="text" id="bg-image" placeholder="https://...jpg"></label>
+      <label>Fit: <select id="bg-fit"><option>cover</option><option>contain</option></select></label>
+      <label>Color: <input type="color" id="bg-color" value="#121212"></label>
+      <label><input type="checkbox" id="sync-bg"> Sync BG from Cover</label>
+      <label><input type="checkbox" id="smart-bg"> Smart‑Mode BG</label>
+    </div>
+
+    <div class="section"><strong>Progress Bar:</strong><br/>
+      <label>Bar Color: <input type="color" id="bar-color" value="#1db954"></label>
+      <label>Text Color: <input type="color" id="prog-text-color" value="#1db954"></label>
+      <label><input type="checkbox" id="sync-prog-text"> Sync Text</label>
+      <label><input type="checkbox" id="smart-bar"> Smart‑Mode Bar</label>
+      <label><input type="checkbox" id="smart-text"> Smart‑Mode Text</label>
+    </div>
+
+    <div class="section"><strong>Track Info Colors:</strong><br/>
+      <label>Title: <input type="color" id="title-color" value="#ffffff"></label>
+      <label><input type="checkbox" id="smart-title"> Smart</label><br/>
+      <label>Album: <input type="color" id="album-color" value="#ffffff"></label>
+      <label><input type="checkbox" id="smart-album"> Smart</label><br/>
+      <label>Artist: <input type="color" id="artist-color" value="#bbbbbb"></label>
+      <label><input type="checkbox" id="smart-artist"> Smart</label>
     </div>
 
     <div class="section">
-      <label>Bar Color:</label>
-      <input type="color" id="bar-color" value="#1db954" />
-      <label><input type="checkbox" id="smart-bar" /> Smart‑Mode Bar</label>
-    </div>
-    <div class="section">
-      <label>Prog Text:</label>
-      <input type="color" id="prog-text-color" value="#1db954" />
-      <label><input type="checkbox" id="sync-prog-text" /> Sync Text</label>
-      <label><input type="checkbox" id="smart-text" /> Smart‑Mode Text</label>
+      <label><input type="checkbox" id="smart-all"> Enable Smart‑Mode for All</label>
     </div>
 
-    <div class="section">
-      <label>Title Color:</label>
-      <input type="color" id="title-color" value="#ffffff" />
-      <label><input type="checkbox" id="smart-title" /> Smart‑Mode</label>
-    </div>
-    <div class="section">
-      <label>Album Color:</label>
-      <input type="color" id="album-color" value="#ffffff" />
-      <label><input type="checkbox" id="smart-album" /> Smart‑Mode</label>
-    </div>
-    <div class="section">
-      <label>Artist Color:</label>
-      <input type="color" id="artist-color" value="#bbbbbb" />
-      <label><input type="checkbox" id="smart-artist" /> Smart‑Mode</label>
+    <div class="section"><strong>Sizes & Radius:</strong><br/>
+      <div class="inline"><span>Title:</span>
+        <input type="range" id="title-size" min="20" max="80" value="40">
+        <input type="number" id="title-num" min="20" max="80" value="40">px
+      </div>
+      <div class="inline"><span>Album:</span>
+        <input type="range" id="album-size" min="16" max="60" value="30">
+        <input type="number" id="album-num" min="16" max="60" value="30">px
+      </div>
+      <div class="inline"><span>Artist:</span>
+        <input type="range" id="artist-size" min="12" max="40" value="20">
+        <input type="number" id="artist-num" min="12" max="40" value="20">px
+      </div>
+      <div class="inline"><span>Radius:</span>
+        <input type="range" id="radius" min="0" max="20" value="5">
+        <input type="number" id="radius-num" min="0" max="20" value="5">px
+      </div>
     </div>
 
-    <div class="section">
-      <label><input type="checkbox" id="smart-all" /> Smart‑Mode All</label>
-    </div>
+    <hr/>
 
-    <hr />
-
-    <div class="section">
-      <h3>Presets</h3>
-      <input type="text" id="preset-name" placeholder="Preset name" />
-      <button id="save-preset">Save</button>
+    <div class="section"><strong>Presets:</strong><br/>
+      <input type="text" id="preset-name" placeholder="Name preset">
+      <button id="save-preset">Save</button><br/>
       <select id="preset-list"></select>
-      <button id="delete-preset">Delete</button>
-      <button id="reset-defaults">Reset</button>
+      <button id="delete-preset">Delete</button><br/>
+      <button id="reset-defaults">Reset All</button>
     </div>
   </aside>
 
