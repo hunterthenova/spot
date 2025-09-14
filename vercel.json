@@ -1,8 +1,0 @@
-{
-  "rewrites": [
-    {
-      "source": "/env.js",
-      "destination": "/api/env.js"
-    }
-  ]
-}
