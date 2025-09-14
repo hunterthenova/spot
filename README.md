@@ -16,4 +16,4 @@
 P.1.0.0
 
 ## Preview
-![Lipgloss](https://github.com/hunterthenova/spot/blob/main/media/lipgloss.png?raw=true)
+![Lipgloss](https://github.com/hunterthenova/spot/blob/main/media/Lipgloss.png?raw=true)
