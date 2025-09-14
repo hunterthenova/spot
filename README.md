@@ -1,5 +1,4 @@
 ## Tutorial
-(Sorry for not having one sooner)
 
 1. Fork or Use as a template
 2. Go to [Vercel](https://vercel.com/) and create a new project
@@ -9,6 +8,12 @@
 5. Create a new app
 6. Add all of the info
 7. Grab the Client ID
-8. Go to the page of your vercel deployment and click environment variables and add SPOTIFY_CLIENT_ID with your client ID
+8. Go to the page of your Vercel deployment and click environment variables and add SPOTIFY_CLIENT_ID with your client ID
 9. Deploy
 10. Voilà!
+
+## Current Version
+P.1.0.0
+
+## Preview
+![Lipgloss](https://github.com/hunterthenova/spot/blob/main/media/image.jpg?raw=true)
