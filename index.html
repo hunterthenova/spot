@@ -1,34 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Spotify Now Playing</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Login -->
-  <div id="login-container">
-    <button
-      id="login-btn"
-      onclick="window.location.href=
-        'https://accounts.spotify.com/authorize' +
-        '?response_type=token' +
-        '&client_id=2658d08b17ae44bda4d79ee2c1fa905d' +
-        '&scope=' + encodeURIComponent('user-read-currently-playing user-read-playback-state') +
-        '&redirect_uri=' + encodeURIComponent('https://spotify.huntersdesigns.com/')">
-      Login with Spotify
-    </button>
+  <!-- Login Button Container -->
+  <div id="login-container" style="display: none;">
+    <button id="login-btn">Login with Spotify</button>
   </div>
 
-  <!-- Now Playing -->
-  <div id="media-display">
-    <img id="cover-art" alt="Album cover" />
+  <!-- Media Display Container -->
+  <div id="media-display" hidden>
+    <img id="cover-art" alt="Album cover art">
     <div id="details">
-      <div id="title"></div>
-      <div id="album"></div>
-      <div id="artist"></div>
+      <div id="title"></div> <!-- Song title -->
+      <div id="album"></div> <!-- Album name -->
+      <div id="artist"></div> <!-- Artist name -->
     </div>
+
     <div id="progress-container">
       <span id="time-elapsed">0:00</span>
       <div id="progress-bar-container">
@@ -36,82 +28,11 @@
       </div>
       <span id="time-remaining">0:00</span>
     </div>
-  </div>
 
-  <!-- Buttons -->
+  <!-- Buttons Section (Fullscreen) -->
   <div id="buttons">
-    <button id="menu-btn" class="menu-btn">⚙️ Customize</button>
-    <button id="fullscreen-btn" class="menu-btn">⛶ Fullscreen</button>
+    <button id="fullscreen-btn">⛶</button>
   </div>
-
-  <!-- Sidebar -->
-  <aside id="sidebar">
-    <h2>Customize</h2>
-
-    <div class="section"><strong>Show/Hide:</strong><br/>
-      <label><input type="checkbox" class="opt-toggle" data-target="#cover-art" checked> Cover</label>
-      <label><input type="checkbox" class="opt-toggle" data-target="#details" checked> Details</label>
-      <label><input type="checkbox" class="opt-toggle" data-target="#progress-container" checked> Progress</label>
-    </div>
-
-    <div class="section"><strong>Background:</strong><br/>
-      <label>Image URL: <input type="text" id="bg-image" placeholder="https://...jpg"></label>
-      <label>Fit: <select id="bg-fit"><option>cover</option><option>contain</option></select></label>
-      <label>Color: <input type="color" id="bg-color" value="#121212"></label>
-      <label><input type="checkbox" id="sync-bg"> Sync BG from Cover</label>
-      <label><input type="checkbox" id="smart-bg"> Smart‑Mode BG</label>
-    </div>
-
-    <div class="section"><strong>Progress Bar:</strong><br/>
-      <label>Bar Color: <input type="color" id="bar-color" value="#1db954"></label>
-      <label>Text Color: <input type="color" id="prog-text-color" value="#1db954"></label>
-      <label><input type="checkbox" id="sync-prog-text"> Sync Text</label>
-      <label><input type="checkbox" id="smart-bar"> Smart‑Mode Bar</label>
-      <label><input type="checkbox" id="smart-text"> Smart‑Mode Text</label>
-    </div>
-
-    <div class="section"><strong>Track Info Colors:</strong><br/>
-      <label>Title: <input type="color" id="title-color" value="#ffffff"></label>
-      <label><input type="checkbox" id="smart-title"> Smart</label><br/>
-      <label>Album: <input type="color" id="album-color" value="#ffffff"></label>
-      <label><input type="checkbox" id="smart-album"> Smart</label><br/>
-      <label>Artist: <input type="color" id="artist-color" value="#bbbbbb"></label>
-      <label><input type="checkbox" id="smart-artist"> Smart</label>
-    </div>
-
-    <div class="section">
-      <label><input type="checkbox" id="smart-all"> Enable Smart‑Mode for All</label>
-    </div>
-
-    <div class="section"><strong>Sizes & Radius:</strong><br/>
-      <div class="inline"><span>Title:</span>
-        <input type="range" id="title-size" min="20" max="80" value="40">
-        <input type="number" id="title-num" min="20" max="80" value="40">px
-      </div>
-      <div class="inline"><span>Album:</span>
-        <input type="range" id="album-size" min="16" max="60" value="30">
-        <input type="number" id="album-num" min="16" max="60" value="30">px
-      </div>
-      <div class="inline"><span>Artist:</span>
-        <input type="range" id="artist-size" min="12" max="40" value="20">
-        <input type="number" id="artist-num" min="12" max="40" value="20">px
-      </div>
-      <div class="inline"><span>Radius:</span>
-        <input type="range" id="radius" min="0" max="20" value="5">
-        <input type="number" id="radius-num" min="0" max="20" value="5">px
-      </div>
-    </div>
-
-    <hr/>
-
-    <div class="section"><strong>Presets:</strong><br/>
-      <input type="text" id="preset-name" placeholder="Name preset">
-      <button id="save-preset">Save</button><br/>
-      <select id="preset-list"></select>
-      <button id="delete-preset">Delete</button><br/>
-      <button id="reset-defaults">Reset All</button>
-    </div>
-  </aside>
 
   <script src="script.js"></script>
 </body>
