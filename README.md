@@ -4,7 +4,7 @@
 1. Fork or Use as a template
 2. Go to [Vercel](https://vercel.com/) and create a new project
 3. Use the spot (or what you named yours) repo 
---  or if you don’t want to modify it and you want it to update to my versions, use import third-party repository
+--  or if you don’t want to modify it and you want it to update to my versions, use import third-party repository and paste https://github.com/hunterthenova/spot
 4. Go to [The Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
 5. Create a new app
 6. Add all of the info
