@@ -257,10 +257,11 @@ function parseSyncedLyrics(raw) {
   return parsed;
 }
 
-// fetch lyrics from LRCLIB using your provided API docs - we use /api/get relative path
+// fetch lyrics from LRCLIB using your provided API docs
 async function fetchLyricsForTrack(trackName, artistName, albumName, durationSeconds) {
   try {
-    const url = `/api/get?artist_name=${encodeURIComponent(artistName)}&track_name=${encodeURIComponent(trackName)}&album_name=${encodeURIComponent(albumName)}&duration=${encodeURIComponent(durationSeconds)}`;
+    // <-- Changed endpoint to lrclib.net as requested -->
+    const url = `https://lrclib.net/api/get?artist_name=${encodeURIComponent(artistName)}&track_name=${encodeURIComponent(trackName)}&album_name=${encodeURIComponent(albumName)}&duration=${encodeURIComponent(durationSeconds)}`;
     const res = await fetch(url);
     if (!res.ok) {
       // not found or other error
