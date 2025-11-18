@@ -15,17 +15,26 @@ body {
   align-items: center;
   height: 100vh;
   transition: background-color 0.3s ease;
+  position: relative;
 }
 
+/* COVER ART - default central */
 #cover-art {
   max-width: 50%;
   max-height: 50%;
   border-radius: 10px;
   margin-bottom: 20px;
+  transition: all 300ms ease;
+  object-fit: cover;
 }
 
+/* DETAILS - default center under the cover art */
 #details {
   margin-bottom: 20px;
+  transition: all 300ms ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 #title {
@@ -84,16 +93,17 @@ body {
   border-radius: 5px;
   transition: background-color 0.3s;
 }
+#spotify-link:hover { background-color: #14833b; }
 
-#spotify-link:hover {
-  background-color: #14833b;
-}
-
+/* Buttons area fixed top-left */
 #buttons {
   position: fixed;
   top: 10px;
   left: 10px;
   z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 /* Buttons */
@@ -105,49 +115,31 @@ button {
   font-size: 24px;
   font-weight: bold;
   cursor: pointer;
-  margin-bottom: 10px;
-  opacity: 0.5; /* Subtle icon */
-  transition: opacity 0.3s ease;
+  opacity: 0.85;
+  transition: opacity 0.2s ease, transform 0.12s ease;
 }
-button:hover {
-  opacity: 1; /* Full opacity on hover */
-}
-
-#login-btn {
-  margin-top: 20px;
-}
-
-:fullscreen {
-  cursor: none;
-}
-
-/* Lyrics UI */
-#lyrics-controls {
-  margin-bottom: 6px;
-}
+button:hover { opacity: 1; transform: translateY(-1px); }
 
 /* toggle */
 .toggle {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   cursor: pointer;
   user-select: none;
+  color: #ddd;
+  font-size: 13px;
 }
 .toggle input {
-  width: 18px;
-  height: 18px;
-}
-.toggle-label {
-  font-size: 14px;
-  color: #ddd;
+  width: 16px;
+  height: 16px;
 }
 
-/* lyrics container - kept compact and styled to fit your existing look */
+/* lyrics container styling */
 #lyrics-container {
   width: 80%;
   max-width: 900px;
-  max-height: 160px;
+  max-height: 260px;
   overflow: hidden; /* we'll programmatically scroll the inner content */
   border-radius: 12px;
   margin: 10px auto;
@@ -156,6 +148,7 @@ button:hover {
   background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
   padding: 12px;
   box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+  transition: all 300ms ease;
 }
 
 /* the inner scrollable lyrics */
@@ -201,6 +194,51 @@ button:hover {
   margin-right: 8px;
 }
 
+/* --- WHEN LYRICS TOGGLE IS ON: shrink/move album art + info to top-right --- */
+#media-display.lyrics-active #cover-art {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  max-width: 18%;
+  max-height: 18%;
+  margin: 0;
+  border-radius: 8px;
+  z-index: 1000;
+  box-shadow: 0 6px 22px rgba(0,0,0,0.7);
+}
+
+#media-display.lyrics-active #details {
+  position: fixed;
+  top: 14px;
+  right: calc(12px + 18% + 14px); /* place next to cover art */
+  width: 260px;
+  text-align: right;
+  align-items: flex-end;
+  margin: 0;
+  z-index: 1000;
+}
+
+/* smaller fonts in top-right mode */
+#media-display.lyrics-active #title {
+  font-size: 16px;
+  font-weight: 700;
+}
+#media-display.lyrics-active #album {
+  font-size: 13px;
+}
+#media-display.lyrics-active #artist {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+/* make lyrics area larger when active to use vertical space */
+#media-display.lyrics-active #lyrics-container {
+  max-height: calc(100vh - 160px);
+  width: 88%;
+  margin-top: 64px;
+  padding: 16px;
+}
+
 /* responsive adjustments */
 @media (max-width: 720px) {
   #title { font-size: 28px; }
@@ -209,4 +247,14 @@ button:hover {
   #lyrics-container { max-height: 120px; padding: 8px; }
   .lyric-line { font-size: 16px; }
   .lyric-line.current { font-size: 18px; }
+
+  /* when active on small screens push top-right smaller */
+  #media-display.lyrics-active #cover-art {
+    max-width: 28%;
+    max-height: 28%;
+  }
+  #media-display.lyrics-active #details {
+    width: 140px;
+    right: calc(12px + 28% + 8px);
+  }
 }
