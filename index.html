@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Spotify Now Playing</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <!-- Login Button Container -->
@@ -14,11 +14,23 @@
 
   <!-- Media Display Container -->
   <div id="media-display" hidden>
-    <img id="cover-art" alt="Album cover art">
+    <img id="cover-art" alt="Album cover art" />
     <div id="details">
       <div id="title"></div> <!-- Song title -->
       <div id="album"></div> <!-- Album name -->
       <div id="artist"></div> <!-- Artist name -->
+    </div>
+
+    <!-- Live Lyrics Toggle & Container -->
+    <div id="lyrics-controls">
+      <label class="toggle">
+        <input type="checkbox" id="lyrics-toggle" />
+        <span class="toggle-label">Live Lyrics</span>
+      </label>
+    </div>
+
+    <div id="lyrics-container" aria-live="polite" hidden>
+      <div id="lyrics-inner"></div>
     </div>
 
     <div id="progress-container">
@@ -29,9 +41,13 @@
       <span id="time-remaining">0:00</span>
     </div>
 
-  <!-- Buttons Section (Fullscreen) -->
-  <div id="buttons">
-    <button id="fullscreen-btn">⛶</button>
+    <!-- Buttons Section (Fullscreen) -->
+    <div id="buttons">
+      <button id="fullscreen-btn">⛶</button>
+    </div>
+
+    <!-- hidden link in case user wants open in Spotify via Enter -->
+    <a id="spotify-link" href="#" target="_blank" rel="noopener" style="display:none;">Open in Spotify</a>
   </div>
 
   <script src="script.js"></script>
