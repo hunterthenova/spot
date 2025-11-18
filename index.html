@@ -14,16 +14,18 @@
 
   <!-- Media Display Container -->
   <div id="media-display" hidden>
-    <img id="cover-art" alt="Album cover art" />
+    <!-- DETAILS: album art now lives inside details so it sits next to text -->
     <div id="details">
-      <div id="title"></div> <!-- Song title -->
-      <div id="album"></div> <!-- Album name -->
-      <div id="artist"></div> <!-- Artist name -->
+      <img id="cover-art" alt="Album cover art" />
+      <div id="meta">
+        <div id="title"></div> <!-- Song title -->
+        <div id="album"></div> <!-- Album name -->
+        <div id="artist"></div> <!-- Artist name -->
+      </div>
     </div>
 
-    <div id="lyrics-container" aria-live="polite" hidden>
-      <div id="lyrics-inner"></div>
-    </div>
+    <!-- Lyrics overlay: only shows a single current verse in big neon green -->
+    <div id="lyrics-overlay" aria-live="polite" hidden></div>
 
     <div id="progress-container">
       <span id="time-elapsed">0:00</span>
@@ -33,15 +35,18 @@
       <span id="time-remaining">0:00</span>
     </div>
 
-    <!-- Buttons Section (Fullscreen + Live Lyrics Toggle) -->
+    <!-- Buttons Section (Fullscreen + minimal Live Lyrics Toggle) -->
     <div id="buttons">
       <button id="fullscreen-btn" title="Toggle fullscreen">⛶</button>
 
-      <!-- Live Lyrics Toggle moved next to fullscreen -->
-      <label class="toggle" id="lyrics-toggle-wrapper" title="Toggle live lyrics">
-        <input type="checkbox" id="lyrics-toggle" />
-        <span class="toggle-label">Live Lyrics</span>
-      </label>
+      <!-- Minimal live-lyrics toggle (icon-only) -->
+      <button id="lyrics-toggle-btn" class="mini-toggle" aria-pressed="false" title="Toggle live lyrics">
+        <!-- simple LRC icon -->
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+          <path d="M7 8h10M7 12h6M7 16h10"></path>
+        </svg>
+      </button>
     </div>
 
     <!-- hidden link in case user wants open in Spotify via Enter -->
