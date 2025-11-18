@@ -61,15 +61,14 @@ if (!accessToken && window.location.hash) {
   });
 }
 
-// Toggle lyrics
+// Toggle lyrics behavior (also add .lyrics-active class to mediaDisplay)
 lyricsToggle.addEventListener('change', () => {
-  if (lyricsToggle.checked && lyricsReady) {
+  if (lyricsToggle.checked) {
+    mediaDisplay.classList.add('lyrics-active');
     lyricsContainer.hidden = false;
-  } else if (lyricsToggle.checked && !lyricsReady) {
-    // Try to show even if not found: show "Searching..."
-    lyricsContainer.hidden = false;
-    renderSearchingPlaceholder();
+    if (!lyricsReady) renderSearchingPlaceholder();
   } else {
+    mediaDisplay.classList.remove('lyrics-active');
     lyricsContainer.hidden = true;
   }
 });
@@ -260,7 +259,7 @@ function parseSyncedLyrics(raw) {
 // fetch lyrics from LRCLIB using your provided API docs
 async function fetchLyricsForTrack(trackName, artistName, albumName, durationSeconds) {
   try {
-    // <-- Changed endpoint to lrclib.net as requested -->
+    // <-- Uses lrclib.net endpoint -->
     const url = `https://lrclib.net/api/get?artist_name=${encodeURIComponent(artistName)}&track_name=${encodeURIComponent(trackName)}&album_name=${encodeURIComponent(albumName)}&duration=${encodeURIComponent(durationSeconds)}`;
     const res = await fetch(url);
     if (!res.ok) {
