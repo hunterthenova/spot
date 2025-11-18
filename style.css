@@ -1,3 +1,4 @@
+/* --- base layout (keeps your dark aesthetic) --- */
 body {
   font-family: Arial, sans-serif;
   text-align: center;
@@ -18,40 +19,50 @@ body {
   position: relative;
 }
 
-/* COVER ART - default central */
-#cover-art {
-  max-width: 50%;
-  max-height: 50%;
-  border-radius: 10px;
-  margin-bottom: 20px;
+/* DETAILS: album art sits inline next to metadata */
+#details {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
   transition: all 300ms ease;
-  object-fit: cover;
 }
 
-/* DETAILS - default center under the cover art */
-#details {
-  margin-bottom: 20px;
+/* cover art default central size */
+#cover-art {
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
   transition: all 300ms ease;
+}
+
+/* meta text block (title/album/artist) */
+#meta {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
+  text-align: left;
 }
 
 #title {
-  font-size: 40px; /* Largest */
-  font-weight: bold;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.05;
 }
-
 #album {
-  font-size: 30px; /* Medium */
-  font-weight: normal;
+  font-size: 20px;
+  margin-top: 6px;
 }
-
 #artist {
-  font-size: 20px; /* Smallest */
-  font-weight: lighter;
+  font-size: 16px;
+  margin-top: 4px;
+  color: #d1d1d1;
+  font-weight: 400;
 }
 
+/* progress */
 #progress-container {
   display: flex;
   align-items: center;
@@ -59,13 +70,11 @@ body {
   width: 80%;
   margin: 10px auto;
 }
-
 #progress-container span {
   font-size: 14px;
   margin: 0 10px;
   color: #bbb;
 }
-
 #progress-bar-container {
   flex: 1;
   height: 10px;
@@ -74,28 +83,14 @@ body {
   overflow: hidden;
   position: relative;
 }
-
 #progress-bar {
   height: 100%;
   background-color: #1db954;
   width: 0%;
-  transition: width 0.5s ease; /* Smooth transition for progress bar */
+  transition: width 0.5s ease;
 }
 
-#spotify-link {
-  display: inline-block;
-  margin-top: 20px;
-  padding: 10px 20px;
-  color: white;
-  background-color: #1db954;
-  text-decoration: none;
-  font-weight: bold;
-  border-radius: 5px;
-  transition: background-color 0.3s;
-}
-#spotify-link:hover { background-color: #14833b; }
-
-/* Buttons area fixed top-left */
+/* Buttons at top-left */
 #buttons {
   position: fixed;
   top: 10px;
@@ -103,158 +98,142 @@ body {
   z-index: 9999;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
-
-/* Buttons */
-button {
+#buttons button {
   background-color: transparent;
   border: none;
-  padding: 10px;
+  padding: 8px;
   color: white;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: bold;
   cursor: pointer;
-  opacity: 0.85;
-  transition: opacity 0.2s ease, transform 0.12s ease;
+  opacity: 0.9;
+  transition: transform 0.12s ease, opacity 0.12s ease;
 }
-button:hover { opacity: 1; transform: translateY(-1px); }
+#buttons button:hover { transform: translateY(-2px); }
 
-/* toggle */
-.toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  user-select: none;
-  color: #ddd;
-  font-size: 13px;
-}
-.toggle input {
-  width: 16px;
-  height: 16px;
-}
-
-/* lyrics container styling */
-#lyrics-container {
-  width: 80%;
-  max-width: 900px;
-  max-height: 260px;
-  overflow: hidden; /* we'll programmatically scroll the inner content */
-  border-radius: 12px;
-  margin: 10px auto;
-  position: relative;
-  backdrop-filter: blur(6px);
-  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-  padding: 12px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.6);
-  transition: all 300ms ease;
-}
-
-/* the inner scrollable lyrics */
-#lyrics-inner {
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
-  padding-right: 8px;
-  box-sizing: content-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transform: translateZ(0); /* smooth scrolling */
-}
-
-/* each line */
-.lyric-line {
-  font-size: 18px;
+/* minimal toggle button styling */
+.mini-toggle {
+  width: 34px;
+  height: 34px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.03);
   color: #cfcfcf;
-  line-height: 1.4;
-  margin: 6px 0;
-  transition: color 0.12s ease, transform 0.15s ease, font-size 0.15s ease;
+  padding: 4px;
+}
+.mini-toggle[aria-pressed="true"] {
+  color: #12ff6a;
+  box-shadow: 0 6px 28px rgba(18,255,106,0.06), inset 0 0 8px rgba(18,255,106,0.03);
+  background: rgba(18,255,106,0.02);
+}
+
+/* lyrics overlay: only the current verse, removed big scrolling container */
+#lyrics-overlay {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: none;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.12));
+  backdrop-filter: blur(6px);
+  transition: transform 200ms cubic-bezier(.2,.9,.2,1), opacity 180ms ease;
+  opacity: 0;
+  min-width: 40%;
+}
+
+/* text inside overlay (neon style for current verse) */
+#lyrics-overlay .line {
+  font-weight: 800;
+  font-size: 34px;
+  line-height: 1.02;
+  text-align: center;
+  color: #b8ffb4;
+  letter-spacing: 0.6px;
+  text-shadow:
+    0 2px 0 rgba(0,0,0,0.6),
+    0 6px 22px rgba(18,255,106,0.08),
+    0 0 30px rgba(18,255,106,0.18),
+    0 0 60px rgba(18,255,106,0.08);
+  transform-origin: center;
+  transition: transform 220ms cubic-bezier(.2,.9,.2,1), opacity 140ms ease;
   white-space: nowrap;
-  text-overflow: ellipsis;
   overflow: hidden;
-  max-width: 100%;
+  text-overflow: ellipsis;
 }
 
-/* current highlighted line */
-.lyric-line.current {
-  color: #ffffff;
-  font-size: 20px;
-  font-weight: 700;
-  transform: scale(1.02);
-  text-shadow: 0 8px 24px rgba(29,185,84,0.08);
+/* pop animation (applied whenever verse changes) */
+#lyrics-overlay.pop {
+  transform: translate(-50%, -50%) scale(1.06);
+  opacity: 1;
+}
+#lyrics-overlay.pop .line {
+  transform: scale(1.06);
+  opacity: 1;
 }
 
-/* small timestamp (optional, hidden by default) */
-.lyric-timestamp {
-  display: none;
-  font-size: 12px;
-  color: #9aa0a6;
-  margin-right: 8px;
+/* when overlay is shown but not popping */
+#lyrics-overlay.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
 }
 
-/* --- WHEN LYRICS TOGGLE IS ON: shrink/move album art + info to top-right --- */
-#media-display.lyrics-active #cover-art {
+/* top-right compact mode when lyrics are active
+   (we still keep the top-right small chrome from earlier behavior,
+   but now album art sits next to meta) */
+#media-display.lyrics-active #details {
   position: fixed;
   top: 12px;
   right: 12px;
-  max-width: 18%;
-  max-height: 18%;
-  margin: 0;
+  gap: 10px;
+  background: rgba(255,255,255,0.02);
+  padding: 8px 10px;
+  border-radius: 10px;
+  z-index: 1500;
+  align-items: center;
+}
+
+/* smaller sizes in top-right */
+#media-display.lyrics-active #cover-art {
+  width: 64px;
+  height: 64px;
   border-radius: 8px;
-  z-index: 1000;
-  box-shadow: 0 6px 22px rgba(0,0,0,0.7);
+  box-shadow: 0 8px 26px rgba(0,0,0,0.6);
 }
-
-#media-display.lyrics-active #details {
-  position: fixed;
-  top: 14px;
-  right: calc(12px + 18% + 14px); /* place next to cover art */
-  width: 260px;
-  text-align: right;
-  align-items: flex-end;
-  margin: 0;
-  z-index: 1000;
-}
-
-/* smaller fonts in top-right mode */
 #media-display.lyrics-active #title {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
 }
 #media-display.lyrics-active #album {
-  font-size: 13px;
+  font-size: 12px;
+  margin-top: 4px;
 }
 #media-display.lyrics-active #artist {
-  font-size: 12px;
-  font-weight: 400;
+  font-size: 11px;
+  color: #d1d1d1;
 }
 
-/* make lyrics area larger when active to use vertical space */
-#media-display.lyrics-active #lyrics-container {
-  max-height: calc(100vh - 160px);
-  width: 88%;
-  margin-top: 64px;
-  padding: 16px;
-}
-
-/* responsive adjustments */
+/* smaller overlay on small screens */
 @media (max-width: 720px) {
-  #title { font-size: 28px; }
-  #album { font-size: 20px; }
+  #cover-art { width: 120px; height: 120px; }
+  #title { font-size: 24px; }
+  #album { font-size: 16px; }
   #artist { font-size: 14px; }
-  #lyrics-container { max-height: 120px; padding: 8px; }
-  .lyric-line { font-size: 16px; }
-  .lyric-line.current { font-size: 18px; }
 
-  /* when active on small screens push top-right smaller */
-  #media-display.lyrics-active #cover-art {
-    max-width: 28%;
-    max-height: 28%;
+  #lyrics-overlay {
+    min-width: 80%;
+    padding: 10px 14px;
   }
-  #media-display.lyrics-active #details {
-    width: 140px;
-    right: calc(12px + 28% + 8px);
-  }
+  #lyrics-overlay .line { font-size: 24px; }
+  #media-display.lyrics-active #cover-art { width: 48px; height: 48px; }
+  #media-display.lyrics-active #meta { align-items: flex-end; }
 }
