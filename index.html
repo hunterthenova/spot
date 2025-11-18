@@ -21,14 +21,6 @@
       <div id="artist"></div> <!-- Artist name -->
     </div>
 
-    <!-- Live Lyrics Toggle & Container -->
-    <div id="lyrics-controls">
-      <label class="toggle">
-        <input type="checkbox" id="lyrics-toggle" />
-        <span class="toggle-label">Live Lyrics</span>
-      </label>
-    </div>
-
     <div id="lyrics-container" aria-live="polite" hidden>
       <div id="lyrics-inner"></div>
     </div>
@@ -41,9 +33,15 @@
       <span id="time-remaining">0:00</span>
     </div>
 
-    <!-- Buttons Section (Fullscreen) -->
+    <!-- Buttons Section (Fullscreen + Live Lyrics Toggle) -->
     <div id="buttons">
-      <button id="fullscreen-btn">⛶</button>
+      <button id="fullscreen-btn" title="Toggle fullscreen">⛶</button>
+
+      <!-- Live Lyrics Toggle moved next to fullscreen -->
+      <label class="toggle" id="lyrics-toggle-wrapper" title="Toggle live lyrics">
+        <input type="checkbox" id="lyrics-toggle" />
+        <span class="toggle-label">Live Lyrics</span>
+      </label>
     </div>
 
     <!-- hidden link in case user wants open in Spotify via Enter -->
